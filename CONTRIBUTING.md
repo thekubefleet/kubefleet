@@ -38,7 +38,7 @@ This project and everyone participating in it is governed by our Code of Conduct
 
 1. **Clone and setup:**
    ```bash
-   git clone https://github.com/your-username/kubefleet.git
+   git clone https://github.com/thekubefleet/kubefleet.git
    cd kubefleet
    go mod tidy
    ```

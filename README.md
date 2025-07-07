@@ -49,7 +49,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 
 1. **Clone and setup:**
    ```bash
-   git clone https://github.com/your-username/kubefleet.git
+   git clone https://github.com/thekubefleet/kubefleet.git
    cd kubefleet
    go mod tidy
    ```
@@ -202,8 +202,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- **Issues**: [GitHub Issues](https://github.com/your-username/kubefleet/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/kubefleet/discussions)
+- **Issues**: [GitHub Issues](https://github.com/thekubefleet/kubefleet/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/thekubefleet/kubefleet/discussions)
 - **Security**: [Security Policy](SECURITY.md)
 
 ## 🙏 Acknowledgments
