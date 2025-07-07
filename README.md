@@ -1,23 +1,98 @@
-# kubefleet
+# KubeFleet 🚀
 
-A Kubernetes monitoring solution with an agent that collects cluster data and a React dashboard for visualization.
+[![Go Version](https://img.shields.io/badge/Go-1.24+-blue.svg)](https://golang.org)
+[![Node Version](https://img.shields.io/badge/Node-18+-green.svg)](https://nodejs.org)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-## Features
+A modern Kubernetes monitoring solution with an intelligent agent that collects cluster data and a beautiful React dashboard for real-time visualization.
 
-### Agent
-- **Namespace Discovery**: Automatically discovers all namespaces in the cluster
-- **Resource Monitoring**: Lists pods, deployments, and services in each namespace
-- **Metrics Collection**: Gathers performance metrics (CPU, memory) from resources
-- **gRPC Communication**: Sends data to the dashboard server via gRPC
+## ✨ Features
 
-### Dashboard
-- **Real-time Monitoring**: Live updates every 30 seconds
+### 🕵️ Agent
+- **Smart Discovery**: Automatically discovers all namespaces and resources
+- **Resource Monitoring**: Tracks pods, deployments, and services in real-time
+- **Performance Metrics**: Collects CPU and memory usage data
+- **gRPC Communication**: Fast, efficient data transmission to dashboard
+- **Kubernetes Native**: Runs as a pod with proper RBAC permissions
+
+### 📊 Dashboard
+- **Real-time Updates**: Live data refresh every 30 seconds
 - **Cluster Overview**: High-level statistics and resource counts
-- **Namespace Explorer**: Detailed view of all namespaces and their resources
-- **Performance Charts**: Interactive charts for CPU and memory metrics
-- **Modern UI**: Built with React, TypeScript, and Material-UI
+- **Namespace Explorer**: Interactive drill-down into namespaces and resources
+- **Performance Charts**: Beautiful, interactive charts for metrics visualization
+- **Modern UI**: Dark theme with Material-UI components
+- **Responsive Design**: Works perfectly on desktop and mobile
 
-## Project Structure
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    gRPC     ┌─────────────────┐    HTTP     ┌─────────────────┐
+│   Kubernetes    │ ──────────► │   KubeFleet     │ ──────────► │   React         │
+│   Agent         │             │   Dashboard     │             │   Frontend      │
+│                 │             │   Server        │             │                 │
+└─────────────────┘             └─────────────────┘             └─────────────────┘
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Go** (>=1.18)
+- **Node.js** (>=16)
+- **protoc** (Protocol Buffers compiler)
+- **Docker** (for container builds)
+- **Kubernetes cluster** (for deployment)
+
+### Local Development
+
+1. **Clone and setup:**
+   ```bash
+   git clone https://github.com/your-username/kubefleet.git
+   cd kubefleet
+   go mod tidy
+   ```
+
+2. **Generate protobuf code:**
+   ```bash
+   protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/agent.proto
+   ```
+
+3. **Start the dashboard server:**
+   ```bash
+   go run ./cmd/server
+   ```
+
+4. **Start the React development server:**
+   ```bash
+   cd dashboard
+   npm start
+   ```
+
+5. **Run the agent (in another terminal):**
+   ```bash
+   go run ./cmd/agent
+   ```
+
+6. **Access the dashboard:** http://localhost:3000
+
+### Docker Deployment
+
+```bash
+# Build containers
+docker build -t kubefleet-agent:latest .
+docker build -f Dockerfile.dashboard -t kubefleet-dashboard:latest .
+
+# Deploy to Kubernetes
+kubectl apply -f deploy/dashboard-deployment.yaml
+kubectl apply -f deploy/agent-deployment.yaml
+
+# Access the dashboard
+kubectl port-forward svc/kubefleet-dashboard 3000:3000
+```
+
+## 📁 Project Structure
 
 ```
 kubefleet/
@@ -36,86 +111,11 @@ kubefleet/
 │   └── package.json
 ├── proto/              # Protobuf definitions
 ├── deploy/             # Kubernetes manifests
-└── Dockerfile*         # Container builds
+├── .github/            # GitHub templates and workflows
+└── docs/               # Documentation
 ```
 
-## Quick Start
-
-### Prerequisites
-
-1. **Go** (>=1.18)
-2. **Node.js** (>=16)
-3. **protoc** (for protobuf/gRPC)
-4. **Docker** (for building containers)
-5. **Kubernetes cluster** (for deployment)
-
-### Local Development
-
-1. **Clone and setup:**
-   ```sh
-   git clone <your-repo>
-   cd kubefleet
-   go mod tidy
-   ```
-
-2. **Generate protobuf code:**
-   ```sh
-   protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/agent.proto
-   ```
-
-3. **Start the dashboard server:**
-   ```sh
-   go run ./cmd/server
-   ```
-
-4. **Start the React development server:**
-   ```sh
-   cd dashboard
-   npm start
-   ```
-
-5. **Run the agent (in another terminal):**
-   ```sh
-   go run ./cmd/agent
-   ```
-
-6. **Access the dashboard:** http://localhost:3000
-
-### Building Containers
-
-```sh
-# Build agent
-docker build -t kubefleet-agent:latest .
-
-# Build dashboard
-docker build -f Dockerfile.dashboard -t kubefleet-dashboard:latest .
-```
-
-### Deploying to Kubernetes
-
-1. **Deploy the dashboard:**
-   ```sh
-   kubectl apply -f deploy/dashboard-deployment.yaml
-   ```
-
-2. **Deploy the agent:**
-   ```sh
-   kubectl apply -f deploy/agent-deployment.yaml
-   ```
-
-3. **Check the deployment:**
-   ```sh
-   kubectl get pods -l app=kubefleet-dashboard
-   kubectl get pods -l app=kubefleet-agent
-   ```
-
-4. **Access the dashboard:**
-   ```sh
-   kubectl port-forward svc/kubefleet-dashboard 3000:3000
-   ```
-   Then visit http://localhost:3000
-
-## Configuration
+## ⚙️ Configuration
 
 ### Environment Variables
 
@@ -132,9 +132,9 @@ The agent requires the following permissions:
 - Read access to namespaces, pods, services, and deployments
 - Read access to metrics API (if available)
 
-## API Endpoints
+## 🔌 API Reference
 
-### Dashboard Server
+### Dashboard Server Endpoints
 
 - `GET /api/data` - Get all historical data
 - `GET /api/data/latest` - Get the latest data point
@@ -150,22 +150,36 @@ service AgentReporter {
 }
 ```
 
-## Development
+## 🤝 Contributing
 
-### Adding New Metrics
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-1. Update the protobuf definition in `proto/agent.proto`
-2. Regenerate the Go code
-3. Update the metrics collector in `internal/metrics/`
-4. Update the dashboard components to display the new data
+### Development Setup
 
-### Adding New Dashboard Components
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
-1. Create a new component in `dashboard/src/components/`
-2. Add it to the main App component
-3. Implement data fetching from the API endpoints
+### Code Style
 
-## Troubleshooting
+- **Go**: Follow [Effective Go](https://golang.org/doc/effective_go.html)
+- **React**: Use TypeScript, functional components, and Material-UI
+- **Commits**: Use conventional commit format
+
+## 📋 Roadmap
+
+- [ ] **Enhanced Metrics**: Kubernetes Metrics API integration
+- [ ] **Prometheus Support**: Direct Prometheus metrics collection
+- [ ] **Alerting**: Built-in alerting capabilities
+- [ ] **Authentication**: User authentication and authorization
+- [ ] **Multi-cluster**: Support for multiple Kubernetes clusters
+- [ ] **Helm Chart**: Official Helm chart for easy deployment
+- [ ] **Performance**: Resource usage trends and predictions
+- [ ] **Custom Dashboards**: User-configurable dashboard layouts
+
+## 🐛 Troubleshooting
 
 ### Common Issues
 
@@ -182,13 +196,23 @@ service AgentReporter {
    - Ensure the React development server is running on port 3001
    - Check browser console for errors
 
-## Next Steps
+## 📄 License
 
-- [ ] Implement actual metrics collection from Kubernetes Metrics API
-- [ ] Add Prometheus integration for detailed metrics
-- [ ] Add configuration for collection intervals
-- [ ] Implement retry logic for gRPC failures
-- [ ] Add authentication and authorization
-- [ ] Create Helm chart for easier deployment
-- [ ] Add alerting capabilities
-- [ ] Implement resource usage trends and predictions
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Issues**: [GitHub Issues](https://github.com/your-username/kubefleet/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-username/kubefleet/discussions)
+- **Security**: [Security Policy](SECURITY.md)
+
+## 🙏 Acknowledgments
+
+- [Kubernetes client-go](https://github.com/kubernetes/client-go) for Kubernetes API integration
+- [Material-UI](https://mui.com/) for the beautiful React components
+- [Recharts](https://recharts.org/) for data visualization
+- [gRPC](https://grpc.io/) for efficient communication
+
+---
+
+**Made with ❤️ by the KubeFleet community**
