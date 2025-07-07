@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package agent;
+
+option go_package = "./proto;agentpb";
+
+// Namespace and resource info
+message ResourceInfo {
+  string namespace = 1;
+  repeated string pods = 2;
+  repeated string deployments = 3;
+  // Add more resource types as needed
+}
+
+// Performance metrics for a resource
+message ResourceMetrics {
+  string namespace = 1;
+  string name = 2;
+  string kind = 3; // Pod, Deployment, etc.
+  double cpu = 4;
+  double memory = 5;
+}
+
+// The main data payload sent by the agent
+message AgentData {
+  repeated ResourceInfo resources = 1;
+  repeated ResourceMetrics metrics = 2;
+  int64 timestamp = 3;
+}
+
+// gRPC service for sending agent data
+service AgentReporter {
+  rpc ReportData(AgentData) returns (ReportResponse);
+}
+
+message ReportResponse {
+  bool success = 1;
+  string message = 2;
+}

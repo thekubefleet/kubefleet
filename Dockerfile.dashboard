@@ -1,0 +1,54 @@
+# Build stage for Go server
+FROM golang:1.24-alpine AS go-builder
+
+WORKDIR /app
+
+# Copy go mod files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the server
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server ./cmd/server
+
+# Build stage for React app
+FROM node:18-alpine AS react-builder
+
+WORKDIR /app
+
+# Copy package files
+COPY dashboard/package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy React source
+COPY dashboard/src ./src
+COPY dashboard/public ./public
+COPY dashboard/tsconfig.json ./
+
+# Build React app
+RUN npm run build
+
+# Final stage
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy the server binary from go-builder stage
+COPY --from=go-builder /app/server .
+
+# Copy the React build from react-builder stage
+COPY --from=react-builder /app/build ./build
+
+# Expose ports
+EXPOSE 3000 50051
+
+# Run the server
+CMD ["./server"] 

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubefleet-agent
+  namespace: default
+  labels:
+    app: kubefleet-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubefleet-agent
+  template:
+    metadata:
+      labels:
+        app: kubefleet-agent
+    spec:
+      serviceAccountName: kubefleet-agent
+      containers:
+      - name: agent
+        image: kubefleet-agent:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KUBEFLEET_SERVER_ADDR
+          value: "kubefleet-dashboard:50051"  # Points to the dashboard service
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubefleet-agent
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubefleet-agent
+rules:
+- apiGroups: [""]
+  resources: ["namespaces", "pods", "services"]
+  verbs: ["get", "list"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["pods", "nodes"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubefleet-agent
+subjects:
+- kind: ServiceAccount
+  name: kubefleet-agent
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: kubefleet-agent
+  apiGroup: rbac.authorization.k8s.io 
