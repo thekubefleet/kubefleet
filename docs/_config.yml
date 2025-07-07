@@ -1,0 +1,57 @@
+title: KubeFleet
+description: Modern Kubernetes monitoring with intelligent agent and beautiful dashboard
+url: "https://your-username.github.io"
+baseurl: "/kubefleet"
+
+# GitHub Pages settings
+github:
+  is_project_page: true
+  repository_url: https://github.com/your-username/kubefleet
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "default"
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# Include files
+include:
+  - _pages
+  - _posts
+  - _drafts
+  - _layouts
+  - _includes
+  - _sass
+  - _config.yml
+  - index.html
+  - getting-started.html
+  - documentation.html
+  - contributing.html 

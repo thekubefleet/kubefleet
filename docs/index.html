@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KubeFleet - Modern Kubernetes Monitoring</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-ship text-2xl text-blue-600 mr-2"></i>
+                    <span class="text-xl font-bold text-gray-800">KubeFleet</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                    <a href="docs/getting-started.html" class="text-gray-600 hover:text-blue-600">Getting Started</a>
+                    <a href="docs/documentation.html" class="text-gray-600 hover:text-blue-600">Documentation</a>
+                    <a href="docs/contributing.html" class="text-gray-600 hover:text-blue-600">Contributing</a>
+                    <a href="https://github.com/your-username/kubefleet" class="text-gray-600 hover:text-blue-600">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white pt-20 pb-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                Modern Kubernetes Monitoring
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-blue-100">
+                Intelligent agent + Beautiful dashboard = Complete cluster visibility
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="docs/getting-started.html"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
+                    Get Started
+                </a>
+                <a href="https://github.com/your-username/kubefleet"
+                    class="bg-gray-800 hover:bg-gray-900 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
+                    <i class="fab fa-github mr-2"></i>View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Why Choose KubeFleet?</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="feature-card bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Smart Discovery</h3>
+                    <p class="text-gray-600">Automatically discovers all namespaces and resources in your Kubernetes
+                        cluster with intelligent monitoring.</p>
+                </div>
+                <div class="feature-card bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+                    <div class="text-green-600 text-4xl mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Real-time Metrics</h3>
+                    <p class="text-gray-600">Beautiful, interactive charts showing CPU, memory, and performance metrics
+                        with live updates every 30 seconds.</p>
+                </div>
+                <div class="feature-card bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+                    <div class="text-purple-600 text-4xl mb-4">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Lightning Fast</h3>
+                    <p class="text-gray-600">Built with Go and gRPC for maximum performance. Deploy in minutes with our
+                        Kubernetes manifests.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Simple Architecture</h2>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
+                    <div class="text-center">
+                        <div class="bg-blue-100 p-4 rounded-lg mb-2">
+                            <i class="fas fa-server text-2xl text-blue-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Kubernetes Agent</h3>
+                        <p class="text-sm text-gray-600">Collects cluster data</p>
+                    </div>
+                    <div class="text-blue-600 text-2xl">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-green-100 p-4 rounded-lg mb-2">
+                            <i class="fas fa-database text-2xl text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold">Dashboard Server</h3>
+                        <p class="text-sm text-gray-600">gRPC + HTTP APIs</p>
+                    </div>
+                    <div class="text-blue-600 text-2xl">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-purple-100 p-4 rounded-lg mb-2">
+                            <i class="fas fa-desktop text-2xl text-purple-600"></i>
+                        </div>
+                        <h3 class="font-semibold">React Dashboard</h3>
+                        <p class="text-sm text-gray-600">Beautiful UI</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Get Started in Minutes</h2>
+            <div class="bg-gray-800 text-green-400 p-6 rounded-lg font-mono text-sm overflow-x-auto">
+                <div class="mb-4">
+                    <span class="text-gray-400"># Clone the repository</span><br>
+                    <span class="text-yellow-400">git clone</span> https://github.com/your-username/kubefleet.git<br>
+                    <span class="text-yellow-400">cd</span> kubefleet
+                </div>
+                <div class="mb-4">
+                    <span class="text-gray-400"># Start the dashboard</span><br>
+                    <span class="text-yellow-400">go run</span> ./cmd/server
+                </div>
+                <div class="mb-4">
+                    <span class="text-gray-400"># Start the agent</span><br>
+                    <span class="text-yellow-400">go run</span> ./cmd/agent
+                </div>
+                <div>
+                    <span class="text-gray-400"># Open dashboard</span><br>
+                    <span class="text-yellow-400">open</span> http://localhost:3000
+                </div>
+            </div>
+            <div class="text-center mt-6">
+                <a href="docs/getting-started.html" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    View complete installation guide →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">KubeFleet</h3>
+                    <p class="text-gray-300">Modern Kubernetes monitoring solution with intelligent agent and beautiful
+                        dashboard.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Documentation</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="docs/getting-started.html" class="hover:text-white">Getting Started</a></li>
+                        <li><a href="docs/documentation.html" class="hover:text-white">Documentation</a></li>
+                        <li><a href="docs/contributing.html" class="hover:text-white">Contributing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Community</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="https://github.com/your-username/kubefleet" class="hover:text-white">GitHub</a>
+                        </li>
+                        <li><a href="https://github.com/your-username/kubefleet/issues"
+                                class="hover:text-white">Issues</a></li>
+                        <li><a href="https://github.com/your-username/kubefleet/discussions"
+                                class="hover:text-white">Discussions</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="https://github.com/your-username/kubefleet/blob/main/LICENSE"
+                                class="hover:text-white">License</a></li>
+                        <li><a href="https://github.com/your-username/kubefleet/blob/main/SECURITY.md"
+                                class="hover:text-white">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2024 KubeFleet. Made with ❤️ by the community.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

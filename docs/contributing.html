@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contributing - KubeFleet</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-ship text-2xl text-blue-600 mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">KubeFleet</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-blue-600">Home</a>
+                    <a href="getting-started.html" class="text-gray-600 hover:text-blue-600">Getting Started</a>
+                    <a href="documentation.html" class="text-gray-600 hover:text-blue-600">Documentation</a>
+                    <a href="https://github.com/your-username/kubefleet" class="text-gray-600 hover:text-blue-600">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="pt-20 pb-16">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-4xl font-bold mb-8 text-gray-800">Contributing to KubeFleet</h1>
+
+            <!-- Welcome Section -->
+            <section class="mb-12">
+                <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-800">Welcome Contributors! 🚀</h2>
+                    <p class="text-blue-700 mb-4">
+                        Thank you for your interest in contributing to KubeFleet! We're excited to have you join our
+                        community.
+                        This guide will help you get started with contributing to the project.
+                    </p>
+                    <p class="text-blue-700">
+                        Whether you're fixing bugs, adding features, improving documentation, or sharing ideas,
+                        every contribution is valuable and appreciated.
+                    </p>
+                </div>
+            </section>
+
+            <!-- How to Contribute -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">How to Contribute</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="text-blue-600 text-2xl mb-3">
+                                <i class="fas fa-bug"></i>
+                            </div>
+                            <h3 class="font-semibold mb-2">Report Bugs</h3>
+                            <p class="text-sm text-gray-600">Found a bug? Report it with detailed steps to reproduce.
+                            </p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="text-green-600 text-2xl mb-3">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3 class="font-semibold mb-2">Suggest Features</h3>
+                            <p class="text-sm text-gray-600">Have an idea? Open a feature request and discuss it with
+                                the community.</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="text-purple-600 text-2xl mb-3">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3 class="font-semibold mb-2">Submit Code</h3>
+                            <p class="text-sm text-gray-600">Fix bugs, add features, or improve existing code.</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="text-orange-600 text-2xl mb-3">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3 class="font-semibold mb-2">Improve Docs</h3>
+                            <p class="text-sm text-gray-600">Help improve documentation, tutorials, and examples.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Development Setup -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Development Setup</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-lg font-semibold mb-4">1. Fork and Clone</h3>
+                    <pre><code class="language-bash"># Fork the repository on GitHub
+# Then clone your fork
+git clone https://github.com/YOUR_USERNAME/kubefleet.git
+cd kubefleet
+
+# Add the original repository as upstream
+git remote add upstream https://github.com/your-username/kubefleet.git</code></pre>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-6">2. Install Dependencies</h3>
+                    <pre><code class="language-bash"># Install Go dependencies
+go mod tidy
+
+# Install Node.js dependencies
+cd dashboard
+npm install
+cd ..</code></pre>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-6">3. Generate Protobuf Code</h3>
+                    <pre><code class="language-bash">protoc --go_out=. --go_opt=paths=source_relative \
+       --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+       proto/agent.proto</code></pre>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-6">4. Run Tests</h3>
+                    <pre><code class="language-bash"># Run Go tests
+go test ./...
+
+# Run React tests
+cd dashboard
+npm test
+cd ..</code></pre>
+                </div>
+            </section>
+
+            <!-- Code Style -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Code Style & Standards</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Go Code</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li>Follow <a href="https://golang.org/doc/effective_go.html"
+                                class="text-blue-600 hover:underline">Effective Go</a> guidelines</li>
+                        <li>Use <code class="bg-gray-100 px-1 rounded">gofmt</code> for code formatting</li>
+                        <li>Run <code class="bg-gray-100 px-1 rounded">golint</code> and <code
+                                class="bg-gray-100 px-1 rounded">golangci-lint</code></li>
+                        <li>Write tests for new functionality</li>
+                        <li>Use meaningful variable and function names</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4">TypeScript/React Code</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li>Follow TypeScript best practices</li>
+                        <li>Use functional components with hooks</li>
+                        <li>Write unit tests with Jest and React Testing Library</li>
+                        <li>Use Material-UI components consistently</li>
+                        <li>Follow the existing code structure and patterns</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4">Commit Messages</h3>
+                    <p class="text-gray-600 mb-4">Follow conventional commit format:</p>
+                    <pre><code class="language-text">type(scope): description
+
+feat(agent): add support for custom metrics collection
+fix(dashboard): resolve memory leak in chart component
+docs(readme): update installation instructions
+test(server): add unit tests for health endpoint</code></pre>
+                </div>
+            </section>
+
+            <!-- Pull Request Process -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Pull Request Process</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Before Submitting</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li>Ensure your code follows the style guidelines</li>
+                        <li>Write or update tests as needed</li>
+                        <li>Update documentation if required</li>
+                        <li>Test your changes thoroughly</li>
+                        <li>Make sure all tests pass</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4">Creating a Pull Request</h3>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 mb-6">
+                        <li>Create a new branch for your feature/fix</li>
+                        <li>Make your changes and commit them</li>
+                        <li>Push your branch to your fork</li>
+                        <li>Create a pull request against the main branch</li>
+                        <li>Fill out the pull request template</li>
+                    </ol>
+
+                    <h3 class="text-lg font-semibold mb-4">Pull Request Template</h3>
+                    <div class="bg-gray-50 p-4 rounded">
+                        <h4 class="font-semibold mb-2">Description</h4>
+                        <p class="text-sm text-gray-600 mb-4">Brief description of the changes</p>
+
+                        <h4 class="font-semibold mb-2">Type of Change</h4>
+                        <ul class="text-sm text-gray-600 mb-4">
+                            <li>• Bug fix</li>
+                            <li>• New feature</li>
+                            <li>• Documentation update</li>
+                            <li>• Performance improvement</li>
+                        </ul>
+
+                        <h4 class="font-semibold mb-2">Testing</h4>
+                        <p class="text-sm text-gray-600 mb-4">How have you tested these changes?</p>
+
+                        <h4 class="font-semibold mb-2">Checklist</h4>
+                        <ul class="text-sm text-gray-600">
+                            <li>• Code follows style guidelines</li>
+                            <li>• Tests added/updated</li>
+                            <li>• Documentation updated</li>
+                            <li>• All tests pass</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Issue Guidelines -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Issue Guidelines</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Bug Reports</h3>
+                    <p class="text-gray-600 mb-4">When reporting a bug, please include:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li>Clear and descriptive title</li>
+                        <li>Steps to reproduce the issue</li>
+                        <li>Expected vs actual behavior</li>
+                        <li>Environment details (OS, Go version, Node version)</li>
+                        <li>Screenshots or logs if applicable</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4">Feature Requests</h3>
+                    <p class="text-gray-600 mb-4">When requesting a feature, please include:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li>Clear description of the feature</li>
+                        <li>Use case and motivation</li>
+                        <li>Proposed implementation approach (if any)</li>
+                        <li>Alternative solutions considered</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Community -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Community</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Code of Conduct</h3>
+                    <p class="text-gray-600 mb-4">
+                        We are committed to providing a welcoming and inspiring community for all.
+                        Please read our <a
+                            href="https://github.com/your-username/kubefleet/blob/main/CODE_OF_CONDUCT.md"
+                            class="text-blue-600 hover:underline">Code of Conduct</a>
+                        to understand the standards we uphold.
+                    </p>
+
+                    <h3 class="text-lg font-semibold mb-4">Getting Help</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="border border-gray-200 rounded p-4">
+                            <h4 class="font-semibold text-blue-600 mb-2">
+                                <i class="fab fa-github mr-2"></i>GitHub Issues
+                            </h4>
+                            <p class="text-sm text-gray-600">Report bugs and request features</p>
+                        </div>
+                        <div class="border border-gray-200 rounded p-4">
+                            <h4 class="font-semibold text-green-600 mb-2">
+                                <i class="fab fa-discord mr-2"></i>Discussions
+                            </h4>
+                            <p class="text-sm text-gray-600">Ask questions and share ideas</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recognition -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Contributor Recognition</h2>
+                <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+                    <h3 class="text-lg font-semibold mb-4 text-green-800">Thank You! 🙏</h3>
+                    <p class="text-green-700 mb-4">
+                        All contributors will be recognized in our:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-green-700">
+                        <li><strong>Contributors list</strong> on GitHub</li>
+                        <li><strong>Release notes</strong> for significant contributions</li>
+                        <li><strong>Project documentation</strong> where appropriate</li>
+                    </ul>
+                    <p class="text-green-700 mt-4">
+                        Your contributions help make KubeFleet better for everyone in the Kubernetes community!
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p>&copy; 2024 KubeFleet. Made with ❤️ by the community.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - KubeFleet</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fas fa-ship text-2xl text-blue-600 mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">KubeFleet</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-blue-600">Home</a>
+                    <a href="getting-started.html" class="text-gray-600 hover:text-blue-600">Getting Started</a>
+                    <a href="contributing.html" class="text-gray-600 hover:text-blue-600">Contributing</a>
+                    <a href="https://github.com/your-username/kubefleet" class="text-gray-600 hover:text-blue-600">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="pt-20 pb-16">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-4xl font-bold mb-8 text-gray-800">Documentation</h1>
+
+            <!-- Table of Contents -->
+            <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Table of Contents</h2>
+                <ul class="space-y-2">
+                    <li><a href="#architecture" class="text-blue-600 hover:text-blue-800">Architecture Overview</a></li>
+                    <li><a href="#api-reference" class="text-blue-600 hover:text-blue-800">API Reference</a></li>
+                    <li><a href="#configuration" class="text-blue-600 hover:text-blue-800">Configuration</a></li>
+                    <li><a href="#deployment" class="text-blue-600 hover:text-blue-800">Deployment</a></li>
+                    <li><a href="#monitoring" class="text-blue-600 hover:text-blue-800">Monitoring & Logging</a></li>
+                    <li><a href="#security" class="text-blue-600 hover:text-blue-800">Security</a></li>
+                </ul>
+            </div>
+
+            <!-- Architecture Overview -->
+            <section id="architecture" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Architecture Overview</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <p class="text-gray-600 mb-6">
+                        KubeFleet consists of three main components that work together to provide comprehensive
+                        Kubernetes monitoring:
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-semibold text-blue-600 mb-2">Kubernetes Agent</h3>
+                            <p class="text-sm text-gray-600">Runs inside your Kubernetes cluster, collecting data about
+                                namespaces, pods, deployments, and metrics.</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-semibold text-green-600 mb-2">Dashboard Server</h3>
+                            <p class="text-sm text-gray-600">Go backend that receives data via gRPC and serves the React
+                                frontend via HTTP APIs.</p>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h3 class="font-semibold text-purple-600 mb-2">React Frontend</h3>
+                            <p class="text-sm text-gray-600">Modern web interface built with TypeScript and Material-UI
+                                for data visualization.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-semibold mb-3">Data Flow</h3>
+                    <div class="bg-gray-50 p-4 rounded">
+                        <pre><code class="language-text">Kubernetes Cluster → Agent → gRPC → Dashboard Server → HTTP → React Frontend</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Reference -->
+            <section id="api-reference" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">API Reference</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">HTTP API Endpoints</h3>
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded p-4">
+                            <h4 class="font-semibold text-green-600">GET /api/data</h4>
+                            <p class="text-sm text-gray-600 mb-2">Get all historical data points</p>
+                            <pre><code class="language-json">{
+  "data": [
+    {
+      "resources": [...],
+      "metrics": [...],
+      "timestamp": 1640995200
+    }
+  ],
+  "count": 10
+}</code></pre>
+                        </div>
+
+                        <div class="border border-gray-200 rounded p-4">
+                            <h4 class="font-semibold text-green-600">GET /api/data/latest</h4>
+                            <p class="text-sm text-gray-600 mb-2">Get the most recent data point</p>
+                            <pre><code class="language-json">{
+  "data": {
+    "resources": [...],
+    "metrics": [...],
+    "timestamp": 1640995200
+  }
+}</code></pre>
+                        </div>
+
+                        <div class="border border-gray-200 rounded p-4">
+                            <h4 class="font-semibold text-green-600">GET /api/health</h4>
+                            <p class="text-sm text-gray-600 mb-2">Health check endpoint</p>
+                            <pre><code class="language-json">{
+  "status": "healthy",
+  "dataPoints": 10
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-8">gRPC Service</h3>
+                    <div class="bg-gray-50 p-4 rounded">
+                        <h4 class="font-semibold mb-2">AgentReporter Service</h4>
+                        <pre><code class="language-protobuf">service AgentReporter {
+  rpc ReportData(AgentData) returns (ReportResponse);
+}
+
+message AgentData {
+  repeated ResourceInfo resources = 1;
+  repeated ResourceMetrics metrics = 2;
+  int64 timestamp = 3;
+}
+
+message ReportResponse {
+  bool success = 1;
+  string message = 2;
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuration -->
+            <section id="configuration" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Configuration</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Environment Variables</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full border border-gray-200">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="border border-gray-200 px-4 py-2 text-left">Variable</th>
+                                    <th class="border border-gray-200 px-4 py-2 text-left">Description</th>
+                                    <th class="border border-gray-200 px-4 py-2 text-left">Default</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-gray-200 px-4 py-2 font-mono">KUBEFLEET_SERVER_ADDR</td>
+                                    <td class="border border-gray-200 px-4 py-2">gRPC server address</td>
+                                    <td class="border border-gray-200 px-4 py-2">localhost:50051</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-200 px-4 py-2 font-mono">HTTP_PORT</td>
+                                    <td class="border border-gray-200 px-4 py-2">HTTP server port</td>
+                                    <td class="border border-gray-200 px-4 py-2">3000</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-200 px-4 py-2 font-mono">GRPC_PORT</td>
+                                    <td class="border border-gray-200 px-4 py-2">gRPC server port</td>
+                                    <td class="border border-gray-200 px-4 py-2">50051</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-8">Kubernetes RBAC</h3>
+                    <p class="text-gray-600 mb-4">The agent requires the following permissions:</p>
+                    <pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubefleet-agent
+rules:
+- apiGroups: [""]
+  resources: ["namespaces", "pods", "services"]
+  verbs: ["get", "list"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["pods", "nodes"]
+  verbs: ["get", "list"]</code></pre>
+                </div>
+            </section>
+
+            <!-- Deployment -->
+            <section id="deployment" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Deployment</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Docker Images</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-blue-600">Agent Image</h4>
+                            <pre><code class="language-bash">docker build -t kubefleet-agent:latest .</code></pre>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-green-600">Dashboard Image</h4>
+                            <pre><code class="language-bash">docker build -f Dockerfile.dashboard -t kubefleet-dashboard:latest .</code></pre>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-8">Kubernetes Deployment</h3>
+                    <p class="text-gray-600 mb-4">Deploy using the provided manifests:</p>
+                    <pre><code class="language-bash"># Deploy dashboard
+kubectl apply -f deploy/dashboard-deployment.yaml
+
+# Deploy agent
+kubectl apply -f deploy/agent-deployment.yaml
+
+# Check status
+kubectl get pods -l app=kubefleet-dashboard
+kubectl get pods -l app=kubefleet-agent</code></pre>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-8">Service Configuration</h3>
+                    <p class="text-gray-600 mb-4">The dashboard service exposes:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <li><strong>Port 3000:</strong> HTTP dashboard interface</li>
+                        <li><strong>Port 50051:</strong> gRPC API for agent communication</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Monitoring & Logging -->
+            <section id="monitoring" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Monitoring & Logging</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Health Checks</h3>
+                    <p class="text-gray-600 mb-4">Both components include health check endpoints:</p>
+                    <pre><code class="language-bash"># Dashboard health check
+curl http://localhost:3000/api/health
+
+# Expected response
+{
+  "status": "healthy",
+  "dataPoints": 10
+}</code></pre>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-8">Logging</h3>
+                    <p class="text-gray-600 mb-4">Components log to stdout/stderr for Kubernetes log collection:</p>
+                    <pre><code class="language-bash"># View dashboard logs
+kubectl logs -l app=kubefleet-dashboard
+
+# View agent logs
+kubectl logs -l app=kubefleet-agent</code></pre>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-8">Metrics</h3>
+                    <p class="text-gray-600 mb-4">The dashboard collects and displays:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <li>Namespace and resource counts</li>
+                        <li>Pod and deployment metrics</li>
+                        <li>CPU and memory usage</li>
+                        <li>Historical data trends</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Security -->
+            <section id="security" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Security</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Network Security</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li>gRPC communication between agent and dashboard</li>
+                        <li>HTTP APIs for frontend communication</li>
+                        <li>Support for TLS encryption (planned)</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4">Access Control</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li>Kubernetes RBAC integration</li>
+                        <li>Principle of least privilege for agent permissions</li>
+                        <li>Service account-based authentication</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4">Data Protection</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <li>Input validation and sanitization</li>
+                        <li>Secure error handling</li>
+                        <li>No sensitive data logging</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p>&copy; 2024 KubeFleet. Made with ❤️ by the community.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
