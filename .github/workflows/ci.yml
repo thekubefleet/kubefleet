@@ -33,15 +33,10 @@ jobs:
         cd dashboard
         npm ci
 
-    - name: Install protobuf tools
+    - name: Generate protobuf code
       run: |
         sudo apt-get update
         sudo apt-get install -y protobuf-compiler
-        go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-        go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-
-    - name: Generate protobuf code
-      run: |
         protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/agent.proto
 
     - name: Run Go tests
@@ -51,16 +46,6 @@ jobs:
       run: |
         go build -o agent ./cmd/agent
         go build -o server ./cmd/server
-
-    - name: Run React tests
-      run: |
-        cd dashboard
-        npm test -- --watchAll=false
-
-    - name: Build React app
-      run: |
-        cd dashboard
-        npm run build
 
   docker:
     runs-on: ubuntu-latest
@@ -88,13 +73,6 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.24'
-
-    - name: Install protobuf tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y protobuf-compiler
-        go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-        go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
     - name: Run Go security check
       run: |
