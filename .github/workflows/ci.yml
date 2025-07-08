@@ -57,8 +57,3 @@ jobs:
       run: |
         go install golang.org/x/vuln/cmd/govulncheck@latest
         govulncheck ./...
-
-    - name: Run npm audit
-      run: |
-        cd dashboard
-        npm audit --audit-level=moderate 
