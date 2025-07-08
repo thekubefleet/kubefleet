@@ -159,19 +159,105 @@ func (x *ResourceMetrics) GetMemory() float64 {
 	return 0
 }
 
+// Pod log entry
+type PodLog struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Namespace     string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	PodName       string                 `protobuf:"bytes,2,opt,name=pod_name,json=podName,proto3" json:"pod_name,omitempty"`
+	ContainerName string                 `protobuf:"bytes,3,opt,name=container_name,json=containerName,proto3" json:"container_name,omitempty"`
+	LogLine       string                 `protobuf:"bytes,4,opt,name=log_line,json=logLine,proto3" json:"log_line,omitempty"`
+	Timestamp     int64                  `protobuf:"varint,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Level         string                 `protobuf:"bytes,6,opt,name=level,proto3" json:"level,omitempty"` // INFO, ERROR, WARN, DEBUG
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PodLog) Reset() {
+	*x = PodLog{}
+	mi := &file_proto_agent_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PodLog) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PodLog) ProtoMessage() {}
+
+func (x *PodLog) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PodLog.ProtoReflect.Descriptor instead.
+func (*PodLog) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PodLog) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *PodLog) GetPodName() string {
+	if x != nil {
+		return x.PodName
+	}
+	return ""
+}
+
+func (x *PodLog) GetContainerName() string {
+	if x != nil {
+		return x.ContainerName
+	}
+	return ""
+}
+
+func (x *PodLog) GetLogLine() string {
+	if x != nil {
+		return x.LogLine
+	}
+	return ""
+}
+
+func (x *PodLog) GetTimestamp() int64 {
+	if x != nil {
+		return x.Timestamp
+	}
+	return 0
+}
+
+func (x *PodLog) GetLevel() string {
+	if x != nil {
+		return x.Level
+	}
+	return ""
+}
+
 // The main data payload sent by the agent
 type AgentData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Resources     []*ResourceInfo        `protobuf:"bytes,1,rep,name=resources,proto3" json:"resources,omitempty"`
 	Metrics       []*ResourceMetrics     `protobuf:"bytes,2,rep,name=metrics,proto3" json:"metrics,omitempty"`
-	Timestamp     int64                  `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Logs          []*PodLog              `protobuf:"bytes,3,rep,name=logs,proto3" json:"logs,omitempty"`
+	Timestamp     int64                  `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AgentData) Reset() {
 	*x = AgentData{}
-	mi := &file_proto_agent_proto_msgTypes[2]
+	mi := &file_proto_agent_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -183,7 +269,7 @@ func (x *AgentData) String() string {
 func (*AgentData) ProtoMessage() {}
 
 func (x *AgentData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_agent_proto_msgTypes[2]
+	mi := &file_proto_agent_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -196,7 +282,7 @@ func (x *AgentData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AgentData.ProtoReflect.Descriptor instead.
 func (*AgentData) Descriptor() ([]byte, []int) {
-	return file_proto_agent_proto_rawDescGZIP(), []int{2}
+	return file_proto_agent_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AgentData) GetResources() []*ResourceInfo {
@@ -213,11 +299,148 @@ func (x *AgentData) GetMetrics() []*ResourceMetrics {
 	return nil
 }
 
+func (x *AgentData) GetLogs() []*PodLog {
+	if x != nil {
+		return x.Logs
+	}
+	return nil
+}
+
 func (x *AgentData) GetTimestamp() int64 {
 	if x != nil {
 		return x.Timestamp
 	}
 	return 0
+}
+
+// Request for pod logs
+type LogRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Namespace     string                 `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	PodName       string                 `protobuf:"bytes,2,opt,name=pod_name,json=podName,proto3" json:"pod_name,omitempty"`
+	ContainerName string                 `protobuf:"bytes,3,opt,name=container_name,json=containerName,proto3" json:"container_name,omitempty"` // Optional, if empty gets all containers
+	TailLines     int32                  `protobuf:"varint,4,opt,name=tail_lines,json=tailLines,proto3" json:"tail_lines,omitempty"`            // Number of lines to fetch, default 100
+	Follow        bool                   `protobuf:"varint,5,opt,name=follow,proto3" json:"follow,omitempty"`                                   // Whether to follow logs in real-time
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LogRequest) Reset() {
+	*x = LogRequest{}
+	mi := &file_proto_agent_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LogRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LogRequest) ProtoMessage() {}
+
+func (x *LogRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LogRequest.ProtoReflect.Descriptor instead.
+func (*LogRequest) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *LogRequest) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *LogRequest) GetPodName() string {
+	if x != nil {
+		return x.PodName
+	}
+	return ""
+}
+
+func (x *LogRequest) GetContainerName() string {
+	if x != nil {
+		return x.ContainerName
+	}
+	return ""
+}
+
+func (x *LogRequest) GetTailLines() int32 {
+	if x != nil {
+		return x.TailLines
+	}
+	return 0
+}
+
+func (x *LogRequest) GetFollow() bool {
+	if x != nil {
+		return x.Follow
+	}
+	return false
+}
+
+// Stream of log entries
+type LogStream struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Logs          []*PodLog              `protobuf:"bytes,1,rep,name=logs,proto3" json:"logs,omitempty"`
+	IsComplete    bool                   `protobuf:"varint,2,opt,name=is_complete,json=isComplete,proto3" json:"is_complete,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LogStream) Reset() {
+	*x = LogStream{}
+	mi := &file_proto_agent_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LogStream) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LogStream) ProtoMessage() {}
+
+func (x *LogStream) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LogStream.ProtoReflect.Descriptor instead.
+func (*LogStream) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *LogStream) GetLogs() []*PodLog {
+	if x != nil {
+		return x.Logs
+	}
+	return nil
+}
+
+func (x *LogStream) GetIsComplete() bool {
+	if x != nil {
+		return x.IsComplete
+	}
+	return false
 }
 
 type ReportResponse struct {
@@ -230,7 +453,7 @@ type ReportResponse struct {
 
 func (x *ReportResponse) Reset() {
 	*x = ReportResponse{}
-	mi := &file_proto_agent_proto_msgTypes[3]
+	mi := &file_proto_agent_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -242,7 +465,7 @@ func (x *ReportResponse) String() string {
 func (*ReportResponse) ProtoMessage() {}
 
 func (x *ReportResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_agent_proto_msgTypes[3]
+	mi := &file_proto_agent_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -255,7 +478,7 @@ func (x *ReportResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReportResponse.ProtoReflect.Descriptor instead.
 func (*ReportResponse) Descriptor() ([]byte, []int) {
-	return file_proto_agent_proto_rawDescGZIP(), []int{3}
+	return file_proto_agent_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ReportResponse) GetSuccess() bool {
@@ -286,17 +509,38 @@ const file_proto_agent_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
 	"\x04kind\x18\x03 \x01(\tR\x04kind\x12\x10\n" +
 	"\x03cpu\x18\x04 \x01(\x01R\x03cpu\x12\x16\n" +
-	"\x06memory\x18\x05 \x01(\x01R\x06memory\"\x8e\x01\n" +
+	"\x06memory\x18\x05 \x01(\x01R\x06memory\"\xb7\x01\n" +
+	"\x06PodLog\x12\x1c\n" +
+	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x19\n" +
+	"\bpod_name\x18\x02 \x01(\tR\apodName\x12%\n" +
+	"\x0econtainer_name\x18\x03 \x01(\tR\rcontainerName\x12\x19\n" +
+	"\blog_line\x18\x04 \x01(\tR\alogLine\x12\x1c\n" +
+	"\ttimestamp\x18\x05 \x01(\x03R\ttimestamp\x12\x14\n" +
+	"\x05level\x18\x06 \x01(\tR\x05level\"\xb1\x01\n" +
 	"\tAgentData\x121\n" +
 	"\tresources\x18\x01 \x03(\v2\x13.agent.ResourceInfoR\tresources\x120\n" +
-	"\ametrics\x18\x02 \x03(\v2\x16.agent.ResourceMetricsR\ametrics\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp\"D\n" +
+	"\ametrics\x18\x02 \x03(\v2\x16.agent.ResourceMetricsR\ametrics\x12!\n" +
+	"\x04logs\x18\x03 \x03(\v2\r.agent.PodLogR\x04logs\x12\x1c\n" +
+	"\ttimestamp\x18\x04 \x01(\x03R\ttimestamp\"\xa3\x01\n" +
+	"\n" +
+	"LogRequest\x12\x1c\n" +
+	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x19\n" +
+	"\bpod_name\x18\x02 \x01(\tR\apodName\x12%\n" +
+	"\x0econtainer_name\x18\x03 \x01(\tR\rcontainerName\x12\x1d\n" +
+	"\n" +
+	"tail_lines\x18\x04 \x01(\x05R\ttailLines\x12\x16\n" +
+	"\x06follow\x18\x05 \x01(\bR\x06follow\"O\n" +
+	"\tLogStream\x12!\n" +
+	"\x04logs\x18\x01 \x03(\v2\r.agent.PodLogR\x04logs\x12\x1f\n" +
+	"\vis_complete\x18\x02 \x01(\bR\n" +
+	"isComplete\"D\n" +
 	"\x0eReportResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2F\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2~\n" +
 	"\rAgentReporter\x125\n" +
 	"\n" +
-	"ReportData\x12\x10.agent.AgentData\x1a\x15.agent.ReportResponseB\x11Z\x0f./proto;agentpbb\x06proto3"
+	"ReportData\x12\x10.agent.AgentData\x1a\x15.agent.ReportResponse\x126\n" +
+	"\rStreamPodLogs\x12\x11.agent.LogRequest\x1a\x10.agent.LogStream0\x01B\x11Z\x0f./proto;agentpbb\x06proto3"
 
 var (
 	file_proto_agent_proto_rawDescOnce sync.Once
@@ -310,23 +554,30 @@ func file_proto_agent_proto_rawDescGZIP() []byte {
 	return file_proto_agent_proto_rawDescData
 }
 
-var file_proto_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_proto_agent_proto_goTypes = []any{
 	(*ResourceInfo)(nil),    // 0: agent.ResourceInfo
 	(*ResourceMetrics)(nil), // 1: agent.ResourceMetrics
-	(*AgentData)(nil),       // 2: agent.AgentData
-	(*ReportResponse)(nil),  // 3: agent.ReportResponse
+	(*PodLog)(nil),          // 2: agent.PodLog
+	(*AgentData)(nil),       // 3: agent.AgentData
+	(*LogRequest)(nil),      // 4: agent.LogRequest
+	(*LogStream)(nil),       // 5: agent.LogStream
+	(*ReportResponse)(nil),  // 6: agent.ReportResponse
 }
 var file_proto_agent_proto_depIdxs = []int32{
 	0, // 0: agent.AgentData.resources:type_name -> agent.ResourceInfo
 	1, // 1: agent.AgentData.metrics:type_name -> agent.ResourceMetrics
-	2, // 2: agent.AgentReporter.ReportData:input_type -> agent.AgentData
-	3, // 3: agent.AgentReporter.ReportData:output_type -> agent.ReportResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 2: agent.AgentData.logs:type_name -> agent.PodLog
+	2, // 3: agent.LogStream.logs:type_name -> agent.PodLog
+	3, // 4: agent.AgentReporter.ReportData:input_type -> agent.AgentData
+	4, // 5: agent.AgentReporter.StreamPodLogs:input_type -> agent.LogRequest
+	6, // 6: agent.AgentReporter.ReportData:output_type -> agent.ReportResponse
+	5, // 7: agent.AgentReporter.StreamPodLogs:output_type -> agent.LogStream
+	6, // [6:8] is the sub-list for method output_type
+	4, // [4:6] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_agent_proto_init() }
@@ -340,7 +591,7 @@ func file_proto_agent_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_agent_proto_rawDesc), len(file_proto_agent_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

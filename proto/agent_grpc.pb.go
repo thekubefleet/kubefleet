@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AgentReporter_ReportData_FullMethodName = "/agent.AgentReporter/ReportData"
+	AgentReporter_ReportData_FullMethodName    = "/agent.AgentReporter/ReportData"
+	AgentReporter_StreamPodLogs_FullMethodName = "/agent.AgentReporter/StreamPodLogs"
 )
 
 // AgentReporterClient is the client API for AgentReporter service.
@@ -29,6 +30,7 @@ const (
 // gRPC service for sending agent data
 type AgentReporterClient interface {
 	ReportData(ctx context.Context, in *AgentData, opts ...grpc.CallOption) (*ReportResponse, error)
+	StreamPodLogs(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[LogStream], error)
 }
 
 type agentReporterClient struct {
@@ -49,6 +51,25 @@ func (c *agentReporterClient) ReportData(ctx context.Context, in *AgentData, opt
 	return out, nil
 }
 
+func (c *agentReporterClient) StreamPodLogs(ctx context.Context, in *LogRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[LogStream], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &AgentReporter_ServiceDesc.Streams[0], AgentReporter_StreamPodLogs_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[LogRequest, LogStream]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type AgentReporter_StreamPodLogsClient = grpc.ServerStreamingClient[LogStream]
+
 // AgentReporterServer is the server API for AgentReporter service.
 // All implementations must embed UnimplementedAgentReporterServer
 // for forward compatibility.
@@ -56,6 +77,7 @@ func (c *agentReporterClient) ReportData(ctx context.Context, in *AgentData, opt
 // gRPC service for sending agent data
 type AgentReporterServer interface {
 	ReportData(context.Context, *AgentData) (*ReportResponse, error)
+	StreamPodLogs(*LogRequest, grpc.ServerStreamingServer[LogStream]) error
 	mustEmbedUnimplementedAgentReporterServer()
 }
 
@@ -68,6 +90,9 @@ type UnimplementedAgentReporterServer struct{}
 
 func (UnimplementedAgentReporterServer) ReportData(context.Context, *AgentData) (*ReportResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReportData not implemented")
+}
+func (UnimplementedAgentReporterServer) StreamPodLogs(*LogRequest, grpc.ServerStreamingServer[LogStream]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamPodLogs not implemented")
 }
 func (UnimplementedAgentReporterServer) mustEmbedUnimplementedAgentReporterServer() {}
 func (UnimplementedAgentReporterServer) testEmbeddedByValue()                       {}
@@ -108,6 +133,17 @@ func _AgentReporter_ReportData_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentReporter_StreamPodLogs_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(LogRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AgentReporterServer).StreamPodLogs(m, &grpc.GenericServerStream[LogRequest, LogStream]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type AgentReporter_StreamPodLogsServer = grpc.ServerStreamingServer[LogStream]
+
 // AgentReporter_ServiceDesc is the grpc.ServiceDesc for AgentReporter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -120,6 +156,12 @@ var AgentReporter_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AgentReporter_ReportData_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "StreamPodLogs",
+			Handler:       _AgentReporter_StreamPodLogs_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "proto/agent.proto",
 }

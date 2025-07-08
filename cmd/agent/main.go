@@ -66,6 +66,8 @@ func collectAndReport(ctx context.Context, k8sClient *k8s.Client, metricsCollect
 
 	// Collect resource information for each namespace
 	var resourceInfos []*agentpb.ResourceInfo
+	var allLogs []*agentpb.PodLog
+
 	for _, namespace := range namespaces {
 		pods, err := k8sClient.GetPodsInNamespace(ctx, namespace)
 		if err != nil {
@@ -81,6 +83,26 @@ func collectAndReport(ctx context.Context, k8sClient *k8s.Client, metricsCollect
 
 		resourceInfo := grpcclient.ConvertResourceInfo(namespace, pods, deployments)
 		resourceInfos = append(resourceInfos, resourceInfo)
+
+		// Collect logs from pods in this namespace
+		for _, podName := range pods {
+			containers, err := k8sClient.GetPodContainers(ctx, namespace, podName)
+			if err != nil {
+				log.Printf("Failed to get containers for pod %s: %v", podName, err)
+				continue
+			}
+
+			for _, containerName := range containers {
+				logLines, err := k8sClient.GetPodLogs(ctx, namespace, podName, containerName, 50, false) // Get last 50 lines
+				if err != nil {
+					log.Printf("Failed to get logs for pod %s container %s: %v", podName, containerName, err)
+					continue
+				}
+
+				podLogs := grpcclient.ConvertPodLogs(namespace, podName, containerName, logLines)
+				allLogs = append(allLogs, podLogs...)
+			}
+		}
 	}
 
 	// Collect metrics
@@ -96,6 +118,7 @@ func collectAndReport(ctx context.Context, k8sClient *k8s.Client, metricsCollect
 	agentData := &agentpb.AgentData{
 		Resources: resourceInfos,
 		Metrics:   protoMetrics,
+		Logs:      allLogs,
 		Timestamp: time.Now().Unix(),
 	}
 
@@ -104,6 +127,6 @@ func collectAndReport(ctx context.Context, k8sClient *k8s.Client, metricsCollect
 		return fmt.Errorf("failed to send agent data: %w", err)
 	}
 
-	fmt.Printf("Successfully reported data for %d namespaces with %d metrics\n", len(namespaces), len(protoMetrics))
+	fmt.Printf("Successfully reported data for %d namespaces with %d metrics and %d log entries\n", len(namespaces), len(protoMetrics), len(allLogs))
 	return nil
 }

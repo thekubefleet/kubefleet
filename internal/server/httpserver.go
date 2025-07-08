@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	agentpb "github.com/thekubefleet/kubefleet/proto"
 )
 
 type HTTPServer struct {
@@ -24,6 +25,9 @@ func NewHTTPServer(dataStore *DataStore) *HTTPServer {
 	// API routes
 	server.router.HandleFunc("/api/data", server.handleGetData).Methods("GET")
 	server.router.HandleFunc("/api/data/latest", server.handleGetLatestData).Methods("GET")
+	server.router.HandleFunc("/api/logs", server.handleGetLogs).Methods("GET")
+	server.router.HandleFunc("/api/logs/{namespace}/{pod}", server.handleGetPodLogs).Methods("GET")
+	server.router.HandleFunc("/api/logs/{namespace}/{pod}/{container}", server.handleGetContainerLogs).Methods("GET")
 	server.router.HandleFunc("/api/health", server.handleHealth).Methods("GET")
 
 	// Serve React app
@@ -134,4 +138,99 @@ func (s *HTTPServer) handleReactApp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.ServeFile(w, r, filePath)
+}
+
+func (s *HTTPServer) handleGetLogs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	data := s.dataStore.GetLatestData()
+	if data == nil {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": "No data available"})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"logs":  data.Logs,
+		"count": len(data.Logs),
+	})
+}
+
+func (s *HTTPServer) handleGetPodLogs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	vars := mux.Vars(r)
+	namespace := vars["namespace"]
+	podName := vars["pod"]
+
+	data := s.dataStore.GetLatestData()
+	if data == nil {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": "No data available"})
+		return
+	}
+
+	var podLogs []*agentpb.PodLog
+	for _, log := range data.Logs {
+		if log.Namespace == namespace && log.PodName == podName {
+			podLogs = append(podLogs, log)
+		}
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"logs":  podLogs,
+		"count": len(podLogs),
+	})
+}
+
+func (s *HTTPServer) handleGetContainerLogs(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	vars := mux.Vars(r)
+	namespace := vars["namespace"]
+	podName := vars["pod"]
+	containerName := vars["container"]
+
+	data := s.dataStore.GetLatestData()
+	if data == nil {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": "No data available"})
+		return
+	}
+
+	var containerLogs []*agentpb.PodLog
+	for _, log := range data.Logs {
+		if log.Namespace == namespace && log.PodName == podName && log.ContainerName == containerName {
+			containerLogs = append(containerLogs, log)
+		}
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"logs":  containerLogs,
+		"count": len(containerLogs),
+	})
 }
