@@ -9,6 +9,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+
+	versioned "k8s.io/metrics/pkg/client/clientset/versioned"
 )
 
 type ResourceMetric struct {
@@ -21,7 +23,8 @@ type ResourceMetric struct {
 }
 
 type Collector struct {
-	clientset *kubernetes.Clientset
+	clientset     *kubernetes.Clientset
+	metricsClient *versioned.Clientset
 }
 
 // NewCollector creates a new metrics collector
@@ -44,7 +47,12 @@ func NewCollector() (*Collector, error) {
 		return nil, fmt.Errorf("failed to create kubernetes client: %w", err)
 	}
 
-	return &Collector{clientset: clientset}, nil
+	metricsClient, err := versioned.NewForConfig(config)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create metrics client: %w", err)
+	}
+
+	return &Collector{clientset: clientset, metricsClient: metricsClient}, nil
 }
 
 // CollectPodMetrics collects metrics for all pods in a namespace
@@ -54,16 +62,36 @@ func (c *Collector) CollectPodMetrics(ctx context.Context, namespace string) ([]
 		return nil, fmt.Errorf("failed to list pods in namespace %s: %w", namespace, err)
 	}
 
+	podMetricsList, err := c.metricsClient.MetricsV1beta1().PodMetricses(namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get pod metrics in namespace %s: %w", namespace, err)
+	}
+
+	// Map pod name to metrics
+	metricsMap := make(map[string]struct{ cpu, mem float64 })
+	for _, podMetric := range podMetricsList.Items {
+		var totalCPU, totalMem int64
+		for _, c := range podMetric.Containers {
+			cpu := c.Usage.Cpu().MilliValue() // millicores
+			mem := c.Usage.Memory().Value()   // bytes
+			totalCPU += cpu
+			totalMem += mem
+		}
+		metricsMap[podMetric.Name] = struct{ cpu, mem float64 }{
+			cpu: float64(totalCPU) / 1000.0,            // convert to cores
+			mem: float64(totalMem) / (1024.0 * 1024.0), // convert to MiB
+		}
+	}
+
 	var metrics []ResourceMetric
 	for _, pod := range pods.Items {
-		// For now, we'll use placeholder metrics
-		// In a real implementation, you'd query the metrics API or Prometheus
+		m := metricsMap[pod.Name]
 		metric := ResourceMetric{
 			Namespace: namespace,
 			Name:      pod.Name,
 			Kind:      "Pod",
-			CPU:       0.0, // TODO: Get actual CPU usage
-			Memory:    0.0, // TODO: Get actual memory usage
+			CPU:       m.cpu,
+			Memory:    m.mem,
 			Timestamp: time.Now(),
 		}
 		metrics = append(metrics, metric)
@@ -79,16 +107,47 @@ func (c *Collector) CollectDeploymentMetrics(ctx context.Context, namespace stri
 		return nil, fmt.Errorf("failed to list deployments in namespace %s: %w", namespace, err)
 	}
 
+	podMetricsList, err := c.metricsClient.MetricsV1beta1().PodMetricses(namespace).List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get pod metrics in namespace %s: %w", namespace, err)
+	}
+
+	// Map pod name to metrics
+	metricsMap := make(map[string]struct{ cpu, mem float64 })
+	for _, podMetric := range podMetricsList.Items {
+		var totalCPU, totalMem int64
+		for _, c := range podMetric.Containers {
+			cpu := c.Usage.Cpu().MilliValue()
+			mem := c.Usage.Memory().Value()
+			totalCPU += cpu
+			totalMem += mem
+		}
+		metricsMap[podMetric.Name] = struct{ cpu, mem float64 }{
+			cpu: float64(totalCPU) / 1000.0,
+			mem: float64(totalMem) / (1024.0 * 1024.0),
+		}
+	}
+
 	var metrics []ResourceMetric
 	for _, deployment := range deployments.Items {
-		// For now, we'll use placeholder metrics
-		// In a real implementation, you'd aggregate metrics from the deployment's pods
+		selector := deployment.Spec.Selector.MatchLabels
+		labelSelector := metav1.FormatLabelSelector(&metav1.LabelSelector{MatchLabels: selector})
+		pods, err := c.clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{LabelSelector: labelSelector})
+		if err != nil {
+			return nil, fmt.Errorf("failed to list pods for deployment %s: %w", deployment.Name, err)
+		}
+		var totalCPU, totalMem float64
+		for _, pod := range pods.Items {
+			m := metricsMap[pod.Name]
+			totalCPU += m.cpu
+			totalMem += m.mem
+		}
 		metric := ResourceMetric{
 			Namespace: namespace,
 			Name:      deployment.Name,
 			Kind:      "Deployment",
-			CPU:       0.0, // TODO: Get actual CPU usage
-			Memory:    0.0, // TODO: Get actual memory usage
+			CPU:       totalCPU,
+			Memory:    totalMem,
 			Timestamp: time.Now(),
 		}
 		metrics = append(metrics, metric)

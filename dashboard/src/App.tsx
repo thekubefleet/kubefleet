@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box, AppBar, Toolbar, Typography, Container } from '@mui/material';
@@ -24,6 +24,8 @@ const theme = createTheme({
 });
 
 function App() {
+  const [selected, setSelected] = useState<{ type: 'pod' | 'deployment'; namespace: string; name: string } | null>(null);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -41,8 +43,8 @@ function App() {
           <ClusterOverview />
 
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, mt: 3 }}>
-            <NamespaceList />
-            <MetricsChart />
+            <NamespaceList selected={selected} setSelected={setSelected} />
+            <MetricsChart selected={selected} />
           </Box>
         </Container>
       </Box>

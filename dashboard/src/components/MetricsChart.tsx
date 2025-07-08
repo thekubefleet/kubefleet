@@ -27,7 +27,11 @@ interface MetricData {
     timestamp: number;
 }
 
-const MetricsChart: React.FC = () => {
+interface MetricsChartProps {
+    selected: { type: 'pod' | 'deployment'; namespace: string; name: string } | null;
+}
+
+const MetricsChart: React.FC<MetricsChartProps> = ({ selected }) => {
     const [metrics, setMetrics] = useState<MetricData[]>([]);
     const [chartType, setChartType] = useState<'line' | 'bar'>('line');
     const [metricType, setMetricType] = useState<'cpu' | 'memory'>('cpu');
@@ -85,6 +89,13 @@ const MetricsChart: React.FC = () => {
         }
     };
 
+    const filteredMetrics = selected
+        ? metrics.filter(m => {
+            const [ns, name] = m.name.split('/');
+            return ns === selected.namespace && name === selected.name;
+        })
+        : metrics;
+
     return (
         <Card>
             <CardContent>
@@ -116,14 +127,14 @@ const MetricsChart: React.FC = () => {
                     </Box>
                 </Box>
 
-                {metrics.length === 0 ? (
+                {filteredMetrics.length === 0 ? (
                     <Typography color="text.secondary" align="center">
                         No metrics data available
                     </Typography>
                 ) : (
                     <ResponsiveContainer width="100%" height={300}>
                         {chartType === 'line' ? (
-                            <LineChart data={metrics}>
+                            <LineChart data={filteredMetrics}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" />
                                 <YAxis />
@@ -137,7 +148,7 @@ const MetricsChart: React.FC = () => {
                                 />
                             </LineChart>
                         ) : (
-                            <BarChart data={metrics}>
+                            <BarChart data={filteredMetrics}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" />
                                 <YAxis />
@@ -151,7 +162,7 @@ const MetricsChart: React.FC = () => {
 
                 <Box sx={{ mt: 2 }}>
                     <Typography variant="body2" color="text.secondary">
-                        Showing {metrics.length} metrics • Last updated: {new Date().toLocaleTimeString()}
+                        Showing {filteredMetrics.length} metrics • Last updated: {new Date().toLocaleTimeString()}
                     </Typography>
                 </Box>
             </CardContent>

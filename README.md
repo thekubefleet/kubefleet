@@ -44,6 +44,10 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 - **protoc** (Protocol Buffers compiler)
 - **Docker** (for container builds)
 - **Kubernetes cluster** (for deployment)
+- **metrics-server** (for real-time CPU/memory metrics)
+
+> **Note:**
+> The Kubernetes [metrics-server](https://github.com/kubernetes-sigs/metrics-server) must be installed and running in your cluster for KubeFleet to collect real-time CPU and memory metrics. If you are running a local cluster (Docker Desktop, Minikube, Kind), you may need to patch metrics-server to use `--kubelet-insecure-tls`.
 
 ### Local Development
 
@@ -195,6 +199,24 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 3. **React app not loading:**
    - Ensure the React development server is running on port 3001
    - Check browser console for errors
+
+#### No metrics available / "the server could not find the requested resource (get pods.metrics.k8s.io)"
+- Ensure metrics-server is installed in your cluster:
+  ```sh
+  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  ```
+- For local clusters (Docker Desktop, Minikube, Kind), patch metrics-server to skip TLS verification:
+  ```sh
+  kubectl -n kube-system patch deployment metrics-server \
+    --type='json' \
+    -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+  kubectl -n kube-system rollout restart deployment metrics-server
+  ```
+- Verify metrics-server is working:
+  ```sh
+  kubectl top nodes
+  kubectl top pods -A
+  ```
 
 ## 📄 License
 
