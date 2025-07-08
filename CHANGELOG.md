@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved dashboard UI with log viewing capabilities
 - Updated TypeScript configuration for better compatibility
 
-## [1.1.0] - 2024-01-XX
+## [1.1.0] - 2025-01-XX
 
 ### Added
 - **Log Collection**: Agent now collects pod logs every 30 seconds
@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **gRPC**: StreamPodLogs method for real-time streaming
 - **UI**: Modal dialog for log viewing with responsive design
 
-## [1.0.0] - 2024-01-XX
+## [1.0.0] - 2025-01-XX
 
 ### Added
 - **Agent Features:**

@@ -2,25 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://thekubefleet.github.io/kubefleet/</loc>
-    <lastmod>2024-01-01</lastmod>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://thekubefleet.github.io/kubefleet/getting-started.html</loc>
-    <lastmod>2024-01-01</lastmod>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thekubefleet.github.io/kubefleet/documentation.html</loc>
-    <lastmod>2024-01-01</lastmod>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thekubefleet.github.io/kubefleet/contributing.html</loc>
-    <lastmod>2024-01-01</lastmod>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
