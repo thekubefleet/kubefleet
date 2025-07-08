@@ -37,7 +37,7 @@ To test the site locally:
 
 - Update `_config.yml` to change site settings
 - Modify HTML files to update content
-- Replace `your-username` with your actual GitHub username in all files
+- Replace `thekubefleet` with your actual GitHub username in all files
 - Update the repository URL in `_config.yml`
 
 ## Features

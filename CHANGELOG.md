@@ -8,25 +8,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial project setup
-- Kubernetes agent for data collection
-- React dashboard with Material-UI
-- gRPC communication between agent and dashboard
-- Real-time metrics visualization
-- Namespace and resource monitoring
-- Docker containerization
-- Kubernetes deployment manifests
-- Comprehensive documentation
+- **Real-time Log Monitoring**: Live pod log streaming with automatic updates
+- **Multi-container Log Support**: View logs from all containers in a pod
+- **Log Level Detection**: Automatic parsing of ERROR, WARN, INFO, DEBUG levels
+- **Log Filtering**: Filter logs by level and search functionality
+- **Log Download**: Export logs as text files
+- **Enhanced UI**: Log viewer modal with Material-UI components
+- **gRPC Log Streaming**: New StreamPodLogs endpoint for real-time log delivery
+- **HTTP Log Endpoints**: REST API endpoints for log retrieval
+- **Proxy Configuration**: React development server proxy for API calls
 
 ### Changed
+- Updated protobuf definitions to include log-related messages
+- Enhanced Kubernetes client with log collection methods
+- Improved dashboard UI with log viewing capabilities
+- Updated TypeScript configuration for better compatibility
 
-### Deprecated
+## [1.1.0] - 2024-01-XX
 
-### Removed
+### Added
+- **Log Collection**: Agent now collects pod logs every 30 seconds
+- **Log Viewer Component**: Full-featured React component for log display
+- **Log API Endpoints**: HTTP endpoints for retrieving logs by namespace/pod/container
+- **Log Streaming**: gRPC streaming for real-time log updates
+- **Log Level Parsing**: Automatic detection of log levels from log content
+- **Container Selection**: Choose specific containers or view all
+- **Search and Filter**: Find specific text and filter by log level
+- **Download Functionality**: Export filtered logs as text files
+- **Auto-refresh**: Toggle real-time log updates
+- **Color-coded Logs**: Visual distinction for different log levels
 
-### Fixed
-
-### Security
+### Technical Details
+- **Backend**: Enhanced k8s client with GetPodLogs, GetPodContainers methods
+- **Frontend**: New PodLogs.tsx component with filtering and search
+- **API**: New /api/logs endpoints for log retrieval
+- **gRPC**: StreamPodLogs method for real-time streaming
+- **UI**: Modal dialog for log viewing with responsive design
 
 ## [1.0.0] - 2024-01-XX
 
@@ -71,13 +88,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.1.0** - Log monitoring and real-time log streaming
 - **1.0.0** - Initial release with core monitoring functionality
 - **Unreleased** - Development version with latest features
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests. 

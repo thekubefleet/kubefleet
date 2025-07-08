@@ -6,7 +6,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-A modern Kubernetes monitoring solution with an intelligent agent that collects cluster data and a beautiful React dashboard for real-time visualization.
+A modern Kubernetes monitoring solution with an intelligent agent that collects cluster data and a beautiful React dashboard for real-time visualization and log monitoring.
 
 ## ✨ Features
 
@@ -14,6 +14,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 - **Smart Discovery**: Automatically discovers all namespaces and resources
 - **Resource Monitoring**: Tracks pods, deployments, and services in real-time
 - **Performance Metrics**: Collects CPU and memory usage data
+- **Log Collection**: Gathers pod logs with automatic log level detection
 - **gRPC Communication**: Fast, efficient data transmission to dashboard
 - **Kubernetes Native**: Runs as a pod with proper RBAC permissions
 
@@ -22,8 +23,18 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 - **Cluster Overview**: High-level statistics and resource counts
 - **Namespace Explorer**: Interactive drill-down into namespaces and resources
 - **Performance Charts**: Beautiful, interactive charts for metrics visualization
+- **Real-time Log Viewer**: Live pod log monitoring with filtering and search
 - **Modern UI**: Dark theme with Material-UI components
 - **Responsive Design**: Works perfectly on desktop and mobile
+
+### 📝 Log Monitoring
+- **Live Log Streaming**: Real-time pod log updates every 5 seconds
+- **Multi-container Support**: View logs from all containers in a pod
+- **Log Level Filtering**: Filter by ERROR, WARN, INFO, DEBUG levels
+- **Search Functionality**: Find specific text in log messages
+- **Log Download**: Export logs as text files
+- **Auto-scroll**: Automatically scroll to latest logs
+- **Color-coded Levels**: Visual distinction for different log levels
 
 ## 🏗️ Architecture
 
@@ -31,7 +42,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 ┌─────────────────┐    gRPC     ┌─────────────────┐    HTTP     ┌─────────────────┐
 │   Kubernetes    │ ──────────► │   KubeFleet     │ ──────────► │   React         │
 │   Agent         │             │   Dashboard     │             │   Frontend      │
-│                 │             │   Server        │             │                 │
+│   + Logs        │             │   Server        │             │   + Log Viewer  │
 └─────────────────┘             └─────────────────┘             └─────────────────┘
 ```
 
@@ -79,7 +90,18 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
    go run ./cmd/agent
    ```
 
-6. **Access the dashboard:** http://localhost:3000
+6. **Access the dashboard:** http://localhost:3001
+
+### Using the Log Viewer
+
+1. **Navigate to the dashboard** and expand any namespace
+2. **Click the 👁️ icon** next to any pod to view its logs
+3. **Use the log viewer features**:
+   - Select specific containers from the dropdown
+   - Filter logs by level (ERROR, WARN, INFO, DEBUG)
+   - Search for specific text in logs
+   - Download logs as a text file
+   - Toggle auto-refresh on/off
 
 ### Docker Deployment
 
@@ -104,16 +126,19 @@ kubefleet/
 │   ├── agent/          # Agent entrypoint
 │   └── server/         # Dashboard server entrypoint
 ├── internal/
-│   ├── k8s/            # Kubernetes API logic
+│   ├── k8s/            # Kubernetes API logic + log collection
 │   ├── metrics/        # Metrics collection
-│   ├── grpcclient/     # gRPC client logic
-│   └── server/         # Dashboard server logic
+│   ├── grpcclient/     # gRPC client logic + log conversion
+│   └── server/         # Dashboard server logic + log endpoints
 ├── dashboard/          # React frontend
 │   ├── src/
 │   │   ├── components/ # React components
-│   │   └── App.tsx     # Main app
-│   └── package.json
-├── proto/              # Protobuf definitions
+│   │   │   ├── PodLogs.tsx      # Log viewer component
+│   │   │   ├── NamespaceList.tsx # Updated with log buttons
+│   │   │   └── ...              # Other components
+│   │   └── App.tsx     # Main app with log modal
+│   └── package.json    # With proxy configuration
+├── proto/              # Protobuf definitions (updated with logs)
 ├── deploy/             # Kubernetes manifests
 ├── .github/            # GitHub templates and workflows
 └── docs/               # Documentation
@@ -135,6 +160,7 @@ kubefleet/
 The agent requires the following permissions:
 - Read access to namespaces, pods, services, and deployments
 - Read access to metrics API (if available)
+- Read access to pod logs
 
 ## 🔌 API Reference
 
@@ -142,6 +168,9 @@ The agent requires the following permissions:
 
 - `GET /api/data` - Get all historical data
 - `GET /api/data/latest` - Get the latest data point
+- `GET /api/logs` - Get all logs from latest data
+- `GET /api/logs/{namespace}/{pod}` - Get logs for a specific pod
+- `GET /api/logs/{namespace}/{pod}/{container}` - Get logs for a specific container
 - `GET /api/health` - Health check endpoint
 
 ### gRPC Service
@@ -151,6 +180,20 @@ The agent sends data using the `AgentReporter` service:
 ```protobuf
 service AgentReporter {
   rpc ReportData(AgentData) returns (ReportResponse);
+  rpc StreamPodLogs(LogRequest) returns (stream LogStream);
+}
+```
+
+### Log Data Structure
+
+```protobuf
+message PodLog {
+  string namespace = 1;
+  string pod_name = 2;
+  string container_name = 3;
+  string log_line = 4;
+  int64 timestamp = 5;
+  string level = 6; // INFO, ERROR, WARN, DEBUG
 }
 ```
 
@@ -174,6 +217,9 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📋 Roadmap
 
+- [x] **Real-time Log Monitoring**: Live pod log streaming with filtering
+- [x] **Multi-container Support**: View logs from all containers in a pod
+- [x] **Log Level Detection**: Automatic parsing of log levels
 - [ ] **Enhanced Metrics**: Kubernetes Metrics API integration
 - [ ] **Prometheus Support**: Direct Prometheus metrics collection
 - [ ] **Alerting**: Built-in alerting capabilities
@@ -199,6 +245,16 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 3. **React app not loading:**
    - Ensure the React development server is running on port 3001
    - Check browser console for errors
+
+4. **Log viewer not working:**
+   - Verify the Go server is running on port 3000
+   - Check that the proxy configuration is correct in `dashboard/package.json`
+   - Ensure the agent has permissions to read pod logs
+
+5. **No logs appearing:**
+   - Check if pods are generating logs
+   - Verify RBAC permissions for log access
+   - Check agent logs for permission errors
 
 #### No metrics available / "the server could not find the requested resource (get pods.metrics.k8s.io)"
 - Ensure metrics-server is installed in your cluster:

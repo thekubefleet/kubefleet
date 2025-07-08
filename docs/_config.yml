@@ -1,12 +1,12 @@
 title: KubeFleet
 description: Modern Kubernetes monitoring with intelligent agent and beautiful dashboard
-url: "https://your-username.github.io"
+url: "https://thekubefleet.github.io"
 baseurl: "/kubefleet"
 
 # GitHub Pages settings
 github:
   is_project_page: true
-  repository_url: https://github.com/your-username/kubefleet
+  repository_url: https://github.com/thekubefleet/kubefleet
 
 # Build settings
 markdown: kramdown
