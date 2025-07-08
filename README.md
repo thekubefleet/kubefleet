@@ -39,8 +39,8 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 
 ### Prerequisites
 
-- **Go** (>=1.18)
-- **Node.js** (>=16)
+- **Go** (>=1.24)
+- **Node.js** (>=18)
 - **protoc** (Protocol Buffers compiler)
 - **Docker** (for container builds)
 - **Kubernetes cluster** (for deployment)
