@@ -20,7 +20,7 @@ const ClusterOverview: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/data/latest');
+                const response = await fetch('/api/data/latest');
                 const result = await response.json();
 
                 if (result.data) {

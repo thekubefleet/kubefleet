@@ -12,8 +12,10 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
+    IconButton,
+    Tooltip,
 } from '@mui/material';
-import { ExpandMore, Storage, Memory } from '@mui/icons-material';
+import { ExpandMore, Storage, Memory, Visibility } from '@mui/icons-material';
 
 interface NamespaceData {
     namespace: string;
@@ -24,15 +26,16 @@ interface NamespaceData {
 interface NamespaceListProps {
     selected: { type: 'pod' | 'deployment'; namespace: string; name: string } | null;
     setSelected: (sel: { type: 'pod' | 'deployment'; namespace: string; name: string } | null) => void;
+    onViewLogs?: (namespace: string, podName: string) => void;
 }
 
-const NamespaceList: React.FC<NamespaceListProps> = ({ selected, setSelected }) => {
+const NamespaceList: React.FC<NamespaceListProps> = ({ selected, setSelected, onViewLogs }) => {
     const [namespaces, setNamespaces] = useState<NamespaceData[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/data/latest');
+                const response = await fetch('/api/data/latest');
                 const result = await response.json();
 
                 if (result.data?.resources) {
@@ -53,6 +56,17 @@ const NamespaceList: React.FC<NamespaceListProps> = ({ selected, setSelected }) 
 
         return () => clearInterval(interval);
     }, []);
+
+    const handlePodClick = (namespace: string, podName: string) => {
+        setSelected({ type: 'pod', namespace, name: podName });
+    };
+
+    const handleViewLogs = (e: React.MouseEvent, namespace: string, podName: string) => {
+        e.stopPropagation();
+        if (onViewLogs) {
+            onViewLogs(namespace, podName);
+        }
+    };
 
     return (
         <Card>
@@ -97,9 +111,24 @@ const NamespaceList: React.FC<NamespaceListProps> = ({ selected, setSelected }) 
                                                     {ns.pods.map((pod: string) => (
                                                         <ListItem
                                                             key={pod}
-                                                            {...({ button: true, selected: selected?.type === 'pod' && selected.namespace === ns.namespace && selected.name === pod, onClick: () => setSelected({ type: 'pod', namespace: ns.namespace, name: pod }) } as any)}
+                                                            {...({
+                                                                button: true,
+                                                                selected: selected?.type === 'pod' && selected.namespace === ns.namespace && selected.name === pod,
+                                                                onClick: () => handlePodClick(ns.namespace, pod)
+                                                            } as any)}
                                                         >
                                                             <ListItemText primary={pod} />
+                                                            <ListItemSecondaryAction>
+                                                                <Tooltip title="View logs">
+                                                                    <IconButton
+                                                                        edge="end"
+                                                                        size="small"
+                                                                        onClick={(e) => handleViewLogs(e, ns.namespace, pod)}
+                                                                    >
+                                                                        <Visibility />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </ListItemSecondaryAction>
                                                         </ListItem>
                                                     ))}
                                                 </List>
@@ -115,7 +144,11 @@ const NamespaceList: React.FC<NamespaceListProps> = ({ selected, setSelected }) 
                                                     {ns.deployments.map((deployment: string) => (
                                                         <ListItem
                                                             key={deployment}
-                                                            {...({ button: true, selected: selected?.type === 'deployment' && selected.namespace === ns.namespace && selected.name === deployment, onClick: () => setSelected({ type: 'deployment', namespace: ns.namespace, name: deployment }) } as any)}
+                                                            {...({
+                                                                button: true,
+                                                                selected: selected?.type === 'deployment' && selected.namespace === ns.namespace && selected.name === deployment,
+                                                                onClick: () => setSelected({ type: 'deployment', namespace: ns.namespace, name: deployment })
+                                                            } as any)}
                                                         >
                                                             <ListItemText primary={deployment} />
                                                         </ListItem>

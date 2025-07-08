@@ -3,7 +3,10 @@ package k8s
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
 
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -91,4 +94,95 @@ func (c *Client) GetServicesInNamespace(ctx context.Context, namespace string) (
 		serviceNames = append(serviceNames, service.Name)
 	}
 	return serviceNames, nil
+}
+
+// GetPodContainers returns all container names in a pod
+func (c *Client) GetPodContainers(ctx context.Context, namespace, podName string) ([]string, error) {
+	pod, err := c.clientset.CoreV1().Pods(namespace).Get(ctx, podName, metav1.GetOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get pod %s in namespace %s: %w", podName, namespace, err)
+	}
+
+	var containerNames []string
+	for _, container := range pod.Spec.Containers {
+		containerNames = append(containerNames, container.Name)
+	}
+	return containerNames, nil
+}
+
+// GetPodLogs returns logs for a specific pod and container
+func (c *Client) GetPodLogs(ctx context.Context, namespace, podName, containerName string, tailLines int64, follow bool) ([]string, error) {
+	req := c.clientset.CoreV1().Pods(namespace).GetLogs(podName, &corev1.PodLogOptions{
+		Container: containerName,
+		TailLines: &tailLines,
+		Follow:    follow,
+	})
+
+	stream, err := req.Stream(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get log stream for pod %s container %s: %w", podName, containerName, err)
+	}
+	defer stream.Close()
+
+	var logs []string
+	buffer := make([]byte, 4096)
+	for {
+		n, err := stream.Read(buffer)
+		if n > 0 {
+			logs = append(logs, string(buffer[:n]))
+		}
+		if err != nil {
+			break
+		}
+	}
+
+	return logs, nil
+}
+
+// GetPodLogsSince returns logs since a specific time
+func (c *Client) GetPodLogsSince(ctx context.Context, namespace, podName, containerName string, since time.Time) ([]string, error) {
+	req := c.clientset.CoreV1().Pods(namespace).GetLogs(podName, &corev1.PodLogOptions{
+		Container: containerName,
+		SinceTime: &metav1.Time{Time: since},
+	})
+
+	stream, err := req.Stream(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get log stream for pod %s container %s: %w", podName, containerName, err)
+	}
+	defer stream.Close()
+
+	var logs []string
+	buffer := make([]byte, 4096)
+	for {
+		n, err := stream.Read(buffer)
+		if n > 0 {
+			logs = append(logs, string(buffer[:n]))
+		}
+		if err != nil {
+			break
+		}
+	}
+
+	return logs, nil
+}
+
+// ParseLogLevel attempts to parse log level from a log line
+func ParseLogLevel(logLine string) string {
+	line := strings.ToUpper(strings.TrimSpace(logLine))
+
+	if strings.Contains(line, "ERROR") || strings.Contains(line, "FATAL") {
+		return "ERROR"
+	}
+	if strings.Contains(line, "WARN") {
+		return "WARN"
+	}
+	if strings.Contains(line, "DEBUG") {
+		return "DEBUG"
+	}
+	if strings.Contains(line, "INFO") {
+		return "INFO"
+	}
+
+	return "INFO" // Default level
 }

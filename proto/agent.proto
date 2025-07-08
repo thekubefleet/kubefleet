@@ -21,16 +21,43 @@ message ResourceMetrics {
   double memory = 5;
 }
 
+// Pod log entry
+message PodLog {
+  string namespace = 1;
+  string pod_name = 2;
+  string container_name = 3;
+  string log_line = 4;
+  int64 timestamp = 5;
+  string level = 6; // INFO, ERROR, WARN, DEBUG
+}
+
 // The main data payload sent by the agent
 message AgentData {
   repeated ResourceInfo resources = 1;
   repeated ResourceMetrics metrics = 2;
-  int64 timestamp = 3;
+  repeated PodLog logs = 3;
+  int64 timestamp = 4;
+}
+
+// Request for pod logs
+message LogRequest {
+  string namespace = 1;
+  string pod_name = 2;
+  string container_name = 3; // Optional, if empty gets all containers
+  int32 tail_lines = 4; // Number of lines to fetch, default 100
+  bool follow = 5; // Whether to follow logs in real-time
+}
+
+// Stream of log entries
+message LogStream {
+  repeated PodLog logs = 1;
+  bool is_complete = 2;
 }
 
 // gRPC service for sending agent data
 service AgentReporter {
   rpc ReportData(AgentData) returns (ReportResponse);
+  rpc StreamPodLogs(LogRequest) returns (stream LogStream);
 }
 
 message ReportResponse {

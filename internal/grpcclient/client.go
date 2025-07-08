@@ -3,6 +3,7 @@ package grpcclient
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"google.golang.org/grpc"
@@ -79,4 +80,52 @@ func ConvertResourceMetrics(metricsData []metrics.ResourceMetric) []*agentpb.Res
 	}
 
 	return protoMetrics
+}
+
+// ConvertPodLogs converts log strings to protobuf format
+func ConvertPodLogs(namespace, podName, containerName string, logLines []string) []*agentpb.PodLog {
+	var protoLogs []*agentpb.PodLog
+	now := time.Now().Unix()
+
+	for _, line := range logLines {
+		// Split log lines (they might contain multiple lines)
+		lines := strings.Split(strings.TrimSpace(line), "\n")
+		for _, logLine := range lines {
+			if logLine == "" {
+				continue
+			}
+
+			protoLog := &agentpb.PodLog{
+				Namespace:     namespace,
+				PodName:       podName,
+				ContainerName: containerName,
+				LogLine:       logLine,
+				Timestamp:     now,
+				Level:         ParseLogLevel(logLine),
+			}
+			protoLogs = append(protoLogs, protoLog)
+		}
+	}
+
+	return protoLogs
+}
+
+// ParseLogLevel attempts to parse log level from a log line
+func ParseLogLevel(logLine string) string {
+	line := strings.ToUpper(strings.TrimSpace(logLine))
+
+	if strings.Contains(line, "ERROR") || strings.Contains(line, "FATAL") {
+		return "ERROR"
+	}
+	if strings.Contains(line, "WARN") {
+		return "WARN"
+	}
+	if strings.Contains(line, "DEBUG") {
+		return "DEBUG"
+	}
+	if strings.Contains(line, "INFO") {
+		return "INFO"
+	}
+
+	return "INFO" // Default level
 }
