@@ -21,7 +21,12 @@ interface NamespaceData {
     deployments: string[];
 }
 
-const NamespaceList: React.FC = () => {
+interface NamespaceListProps {
+    selected: { type: 'pod' | 'deployment'; namespace: string; name: string } | null;
+    setSelected: (sel: { type: 'pod' | 'deployment'; namespace: string; name: string } | null) => void;
+}
+
+const NamespaceList: React.FC<NamespaceListProps> = ({ selected, setSelected }) => {
     const [namespaces, setNamespaces] = useState<NamespaceData[]>([]);
 
     useEffect(() => {
@@ -62,7 +67,7 @@ const NamespaceList: React.FC = () => {
                     </Typography>
                 ) : (
                     <Box sx={{ maxHeight: 400, overflow: 'auto' }}>
-                        {namespaces.map((ns) => (
+                        {namespaces.map((ns: NamespaceData) => (
                             <Accordion key={ns.namespace} sx={{ mb: 1 }}>
                                 <AccordionSummary expandIcon={<ExpandMore />}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
@@ -89,8 +94,11 @@ const NamespaceList: React.FC = () => {
                                                     Pods ({ns.pods.length})
                                                 </Typography>
                                                 <List dense>
-                                                    {ns.pods.map((pod) => (
-                                                        <ListItem key={pod}>
+                                                    {ns.pods.map((pod: string) => (
+                                                        <ListItem
+                                                            key={pod}
+                                                            {...({ button: true, selected: selected?.type === 'pod' && selected.namespace === ns.namespace && selected.name === pod, onClick: () => setSelected({ type: 'pod', namespace: ns.namespace, name: pod }) } as any)}
+                                                        >
                                                             <ListItemText primary={pod} />
                                                         </ListItem>
                                                     ))}
@@ -104,8 +112,11 @@ const NamespaceList: React.FC = () => {
                                                     Deployments ({ns.deployments.length})
                                                 </Typography>
                                                 <List dense>
-                                                    {ns.deployments.map((deployment) => (
-                                                        <ListItem key={deployment}>
+                                                    {ns.deployments.map((deployment: string) => (
+                                                        <ListItem
+                                                            key={deployment}
+                                                            {...({ button: true, selected: selected?.type === 'deployment' && selected.namespace === ns.namespace && selected.name === deployment, onClick: () => setSelected({ type: 'deployment', namespace: ns.namespace, name: deployment }) } as any)}
+                                                        >
                                                             <ListItemText primary={deployment} />
                                                         </ListItem>
                                                     ))}
