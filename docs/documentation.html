@@ -25,9 +25,9 @@
                     </a>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="index.html" class="text-gray-600 hover:text-blue-600">Home</a>
-                    <a href="getting-started.html" class="text-gray-600 hover:text-blue-600">Getting Started</a>
-                    <a href="contributing.html" class="text-gray-600 hover:text-blue-600">Contributing</a>
+                    <a href="/" class="text-gray-600 hover:text-blue-600">Home</a>
+                    <a href="/getting-started" class="text-gray-600 hover:text-blue-600">Getting Started</a>
+                    <a href="/contributing" class="text-gray-600 hover:text-blue-600">Contributing</a>
                     <a href="https://github.com/thekubefleet/kubefleet" class="text-gray-600 hover:text-blue-600">
                         <i class="fab fa-github"></i> GitHub
                     </a>
@@ -46,6 +46,7 @@
                 <h2 class="text-2xl font-semibold mb-4 text-gray-800">Table of Contents</h2>
                 <ul class="space-y-2">
                     <li><a href="#architecture" class="text-blue-600 hover:text-blue-800">Architecture Overview</a></li>
+                    <li><a href="#features" class="text-blue-600 hover:text-blue-800">Features</a></li>
                     <li><a href="#api-reference" class="text-blue-600 hover:text-blue-800">API Reference</a></li>
                     <li><a href="#configuration" class="text-blue-600 hover:text-blue-800">Configuration</a></li>
                     <li><a href="#deployment" class="text-blue-600 hover:text-blue-800">Deployment</a></li>
@@ -60,31 +61,84 @@
                 <div class="bg-white p-6 rounded-lg shadow-lg">
                     <p class="text-gray-600 mb-6">
                         KubeFleet consists of three main components that work together to provide comprehensive
-                        Kubernetes monitoring:
+                        Kubernetes monitoring with real-time log streaming:
                     </p>
 
                     <div class="grid md:grid-cols-3 gap-6 mb-6">
                         <div class="border border-gray-200 rounded-lg p-4">
                             <h3 class="font-semibold text-blue-600 mb-2">Kubernetes Agent</h3>
                             <p class="text-sm text-gray-600">Runs inside your Kubernetes cluster, collecting data about
-                                namespaces, pods, deployments, and metrics.</p>
+                                namespaces, pods, deployments, metrics, and pod logs with automatic level detection.</p>
                         </div>
                         <div class="border border-gray-200 rounded-lg p-4">
                             <h3 class="font-semibold text-green-600 mb-2">Dashboard Server</h3>
-                            <p class="text-sm text-gray-600">Go backend that receives data via gRPC and serves the React
-                                frontend via HTTP APIs.</p>
+                            <p class="text-sm text-gray-600">Go backend that receives data via gRPC, serves the React
+                                frontend via HTTP APIs, and provides real-time log streaming capabilities.</p>
                         </div>
                         <div class="border border-gray-200 rounded-lg p-4">
                             <h3 class="font-semibold text-purple-600 mb-2">React Frontend</h3>
                             <p class="text-sm text-gray-600">Modern web interface built with TypeScript and Material-UI
-                                for data visualization.</p>
+                                for data visualization and comprehensive log monitoring with filtering and search.</p>
                         </div>
                     </div>
 
                     <h3 class="text-lg font-semibold mb-3">Data Flow</h3>
-                    <div class="bg-gray-50 p-4 rounded">
-                        <pre><code class="language-text">Kubernetes Cluster → Agent → gRPC → Dashboard Server → HTTP → React Frontend</code></pre>
+                    <div class="bg-gray-50 p-4 rounded mb-6">
+                        <pre><code class="language-text">Kubernetes Cluster → Agent → gRPC → Dashboard Server → HTTP → React Frontend
+                                    ↓
+                              Log Collection & Streaming</code></pre>
                     </div>
+
+                    <!-- Dashboard Overview Image -->
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold mb-4">Dashboard Interface</h3>
+                        <div class="bg-gray-50 p-4 rounded">
+                            <img src="images/overview.png" alt="KubeFleet Dashboard Overview"
+                                class="max-w-full h-auto rounded-lg shadow-lg mx-auto" style="max-height: 400px;">
+                            <p class="text-gray-600 mt-3 text-sm">The main dashboard provides real-time cluster
+                                monitoring with namespace exploration and metrics visualization</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features -->
+            <section id="features" class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Features</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+
+                    <h3 class="text-lg font-semibold mb-4">Core Monitoring</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li><strong>Smart Discovery:</strong> Automatically discovers all namespaces and resources</li>
+                        <li><strong>Resource Monitoring:</strong> Tracks pods, deployments, and services in real-time
+                        </li>
+                        <li><strong>Performance Metrics:</strong> Collects CPU and memory usage data</li>
+                        <li><strong>Real-time Updates:</strong> Live data refresh every 30 seconds</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4">Log Monitoring</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                        <li><strong>Real-time Log Streaming:</strong> Live pod log updates every 5 seconds</li>
+                        <li><strong>Multi-container Support:</strong> View logs from all containers in a pod</li>
+                        <li><strong>Log Level Detection:</strong> Automatic parsing of ERROR, WARN, INFO, DEBUG levels
+                        </li>
+                        <li><strong>Advanced Filtering:</strong> Filter by log level and search for specific text</li>
+                        <li><strong>Log Download:</strong> Export filtered logs as text files</li>
+                        <li><strong>Auto-scroll:</strong> Automatically scroll to latest logs</li>
+                        <li><strong>Color-coded Levels:</strong> Visual distinction for different log levels</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4">User Interface</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <li><strong>Cluster Overview:</strong> High-level statistics and resource counts</li>
+                        <li><strong>Namespace Explorer:</strong> Interactive drill-down into namespaces and resources
+                        </li>
+                        <li><strong>Performance Charts:</strong> Beautiful, interactive charts for metrics visualization
+                        </li>
+                        <li><strong>Log Viewer Modal:</strong> Full-featured log viewing with filtering and search</li>
+                        <li><strong>Modern UI:</strong> Dark theme with Material-UI components</li>
+                        <li><strong>Responsive Design:</strong> Works perfectly on desktop and mobile</li>
+                    </ul>
                 </div>
             </section>
 
@@ -103,6 +157,7 @@
     {
       "resources": [...],
       "metrics": [...],
+      "logs": [...],
       "timestamp": 1640995200
     }
   ],
@@ -117,8 +172,60 @@
   "data": {
     "resources": [...],
     "metrics": [...],
+    "logs": [...],
     "timestamp": 1640995200
   }
+}</code></pre>
+                        </div>
+
+                        <div class="border border-gray-200 rounded p-4">
+                            <h4 class="font-semibold text-green-600">GET /api/logs</h4>
+                            <p class="text-sm text-gray-600 mb-2">Get all logs from latest data</p>
+                            <pre><code class="language-json">{
+  "logs": [
+    {
+      "namespace": "default",
+      "pod_name": "example-pod",
+      "container_name": "main",
+      "log_line": "INFO: Application started",
+      "timestamp": 1640995200,
+      "level": "INFO"
+    }
+  ]
+}</code></pre>
+                        </div>
+
+                        <div class="border border-gray-200 rounded p-4">
+                            <h4 class="font-semibold text-green-600">GET /api/logs/{namespace}/{pod}</h4>
+                            <p class="text-sm text-gray-600 mb-2">Get logs for a specific pod</p>
+                            <pre><code class="language-json">{
+  "logs": [
+    {
+      "namespace": "default",
+      "pod_name": "example-pod",
+      "container_name": "main",
+      "log_line": "INFO: Application started",
+      "timestamp": 1640995200,
+      "level": "INFO"
+    }
+  ]
+}</code></pre>
+                        </div>
+
+                        <div class="border border-gray-200 rounded p-4">
+                            <h4 class="font-semibold text-green-600">GET /api/logs/{namespace}/{pod}/{container}</h4>
+                            <p class="text-sm text-gray-600 mb-2">Get logs for a specific container</p>
+                            <pre><code class="language-json">{
+  "logs": [
+    {
+      "namespace": "default",
+      "pod_name": "example-pod",
+      "container_name": "main",
+      "log_line": "INFO: Application started",
+      "timestamp": 1640995200,
+      "level": "INFO"
+    }
+  ]
 }</code></pre>
                         </div>
 
@@ -137,17 +244,36 @@
                         <h4 class="font-semibold mb-2">AgentReporter Service</h4>
                         <pre><code class="language-protobuf">service AgentReporter {
   rpc ReportData(AgentData) returns (ReportResponse);
+  rpc StreamPodLogs(LogRequest) returns (stream LogStream);
 }
 
 message AgentData {
   repeated ResourceInfo resources = 1;
   repeated ResourceMetrics metrics = 2;
-  int64 timestamp = 3;
+  repeated PodLog logs = 3;
+  int64 timestamp = 4;
 }
 
-message ReportResponse {
-  bool success = 1;
-  string message = 2;
+message PodLog {
+  string namespace = 1;
+  string pod_name = 2;
+  string container_name = 3;
+  string log_line = 4;
+  int64 timestamp = 5;
+  string level = 6; // INFO, ERROR, WARN, DEBUG
+}
+
+message LogRequest {
+  string namespace = 1;
+  string pod_name = 2;
+  string container_name = 3; // Optional, if empty gets all containers
+  int32 tail_lines = 4; // Number of lines to fetch, default 100
+  bool follow = 5; // Whether to follow logs in real-time
+}
+
+message LogStream {
+  repeated PodLog logs = 1;
+  bool is_complete = 2;
 }</code></pre>
                     </div>
                 </div>
@@ -276,6 +402,19 @@ kubectl logs -l app=kubefleet-agent</code></pre>
                         <li>Pod and deployment metrics</li>
                         <li>CPU and memory usage</li>
                         <li>Historical data trends</li>
+                        <li>Real-time pod logs with level detection</li>
+                    </ul>
+
+                    <h3 class="text-lg font-semibold mb-4 mt-8">Log Monitoring Features</h3>
+                    <p class="text-gray-600 mb-4">The log viewer provides:</p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <li>Real-time log streaming with 5-second refresh intervals</li>
+                        <li>Multi-container log viewing with container selection</li>
+                        <li>Automatic log level detection (ERROR, WARN, INFO, DEBUG)</li>
+                        <li>Log filtering by level and text search</li>
+                        <li>Log download functionality for offline analysis</li>
+                        <li>Auto-scroll to latest logs with toggle control</li>
+                        <li>Color-coded log levels for visual distinction</li>
                     </ul>
                 </div>
             </section>
@@ -290,6 +429,7 @@ kubectl logs -l app=kubefleet-agent</code></pre>
                         <li>gRPC communication between agent and dashboard</li>
                         <li>HTTP APIs for frontend communication</li>
                         <li>Support for TLS encryption (planned)</li>
+                        <li>Secure log streaming with proper access controls</li>
                     </ul>
 
                     <h3 class="text-lg font-semibold mb-4">Access Control</h3>
@@ -297,6 +437,7 @@ kubectl logs -l app=kubefleet-agent</code></pre>
                         <li>Kubernetes RBAC integration</li>
                         <li>Principle of least privilege for agent permissions</li>
                         <li>Service account-based authentication</li>
+                        <li>Log access controls based on namespace permissions</li>
                     </ul>
 
                     <h3 class="text-lg font-semibold mb-4">Data Protection</h3>
@@ -304,6 +445,7 @@ kubectl logs -l app=kubefleet-agent</code></pre>
                         <li>Input validation and sanitization</li>
                         <li>Secure error handling</li>
                         <li>No sensitive data logging</li>
+                        <li>Log data retention controls</li>
                     </ul>
                 </div>
             </section>

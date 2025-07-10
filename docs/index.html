@@ -33,7 +33,6 @@
                     <span class="text-xl font-bold text-gray-800">KubeFleet</span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="/features" class="text-gray-600 hover:text-blue-600">Features</a>
                     <a href="/getting-started" class="text-gray-600 hover:text-blue-600">Getting Started</a>
                     <a href="/documentation" class="text-gray-600 hover:text-blue-600">Documentation</a>
                     <a href="/contributing" class="text-gray-600 hover:text-blue-600">Contributing</a>
@@ -52,7 +51,7 @@
                 Modern Kubernetes Monitoring
             </h1>
             <p class="text-xl md:text-2xl mb-8 text-blue-100">
-                Intelligent agent + Beautiful dashboard = Complete cluster visibility
+                Intelligent agent + Beautiful dashboard = Complete cluster visibility with real-time logs
             </p>
             <div class="flex flex-col md:flex-row gap-4 justify-center">
                 <a href="docs/getting-started.html"
@@ -78,15 +77,16 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Smart Discovery</h3>
                     <p class="text-gray-600">Automatically discovers all namespaces and resources in your Kubernetes
-                        cluster with intelligent monitoring.</p>
+                        cluster with intelligent monitoring and real-time updates.</p>
                 </div>
                 <div class="feature-card bg-white p-6 rounded-lg shadow-lg border border-gray-200">
                     <div class="text-green-600 text-4xl mb-4">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-3">Real-time Metrics</h3>
+                    <h3 class="text-xl font-semibold mb-3">Real-time Metrics & Logs</h3>
                     <p class="text-gray-600">Beautiful, interactive charts showing CPU, memory, and performance metrics
-                        with live updates every 30 seconds.</p>
+                        with live updates every 30 seconds. Plus comprehensive log monitoring with filtering and search.
+                    </p>
                 </div>
                 <div class="feature-card bg-white p-6 rounded-lg shadow-lg border border-gray-200">
                     <div class="text-purple-600 text-4xl mb-4">
@@ -94,14 +94,66 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3">Lightning Fast</h3>
                     <p class="text-gray-600">Built with Go and gRPC for maximum performance. Deploy in minutes with our
-                        Kubernetes manifests.</p>
+                        Kubernetes manifests and enjoy instant log streaming.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Features Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Latest Features</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="text-orange-600 text-3xl mb-3">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Real-time Log Viewer</h3>
+                    <p class="text-sm text-gray-600">Live pod log streaming with automatic level detection, filtering,
+                        and search capabilities.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="text-indigo-600 text-3xl mb-3">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Multi-container Support</h3>
+                    <p class="text-sm text-gray-600">View logs from all containers in a pod with easy container
+                        selection and switching.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="text-red-600 text-3xl mb-3">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Advanced Filtering</h3>
+                    <p class="text-sm text-gray-600">Filter logs by level (ERROR, WARN, INFO, DEBUG) and search for
+                        specific text patterns.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="text-green-600 text-3xl mb-3">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Log Export</h3>
+                    <p class="text-sm text-gray-600">Download filtered logs as text files for offline analysis and
+                        debugging.</p>
+                </div>
+            </div>
+
+            <!-- Log Viewer Screenshot -->
+            <div class="text-center">
+                <h3 class="text-2xl font-semibold mb-6 text-gray-800">Real-time Log Monitoring</h3>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <img src="images/logs.png" alt="KubeFleet Log Viewer"
+                        class="max-w-full h-auto rounded-lg shadow-lg mx-auto" style="max-height: 600px;">
+                    <p class="text-gray-600 mt-4 text-sm">Advanced log viewer with filtering, search, and real-time
+                        updates</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Architecture Section -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Simple Architecture</h2>
             <div class="bg-white p-8 rounded-lg shadow-lg">
@@ -111,7 +163,7 @@
                             <i class="fas fa-server text-2xl text-blue-600"></i>
                         </div>
                         <h3 class="font-semibold">Kubernetes Agent</h3>
-                        <p class="text-sm text-gray-600">Collects cluster data</p>
+                        <p class="text-sm text-gray-600">Collects cluster data & logs</p>
                     </div>
                     <div class="text-blue-600 text-2xl">
                         <i class="fas fa-arrow-right"></i>
@@ -121,7 +173,7 @@
                             <i class="fas fa-database text-2xl text-green-600"></i>
                         </div>
                         <h3 class="font-semibold">Dashboard Server</h3>
-                        <p class="text-sm text-gray-600">gRPC + HTTP APIs</p>
+                        <p class="text-sm text-gray-600">gRPC + HTTP APIs + Log streaming</p>
                     </div>
                     <div class="text-blue-600 text-2xl">
                         <i class="fas fa-arrow-right"></i>
@@ -131,15 +183,26 @@
                             <i class="fas fa-desktop text-2xl text-purple-600"></i>
                         </div>
                         <h3 class="font-semibold">React Dashboard</h3>
-                        <p class="text-sm text-gray-600">Beautiful UI</p>
+                        <p class="text-sm text-gray-600">Beautiful UI + Log viewer</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Overview Image -->
+            <div class="mt-12 text-center">
+                <h3 class="text-2xl font-semibold mb-6 text-gray-800">Dashboard Overview</h3>
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <img src="images/overview.png" alt="KubeFleet Dashboard Overview"
+                        class="max-w-full h-auto rounded-lg shadow-lg mx-auto" style="max-height: 500px;">
+                    <p class="text-gray-600 mt-4 text-sm">Real-time cluster monitoring with namespace exploration and
+                        metrics visualization</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Quick Start Section -->
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Get Started in Minutes</h2>
             <div class="bg-gray-800 text-green-400 p-6 rounded-lg font-mono text-sm overflow-x-auto">
@@ -175,8 +238,8 @@
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
                     <h3 class="text-xl font-bold mb-4">KubeFleet</h3>
-                    <p class="text-gray-300">Modern Kubernetes monitoring solution with intelligent agent and beautiful
-                        dashboard.</p>
+                    <p class="text-gray-300">Modern Kubernetes monitoring solution with intelligent agent, beautiful
+                        dashboard, and comprehensive log monitoring.</p>
                 </div>
                 <div>
                     <h4 class="font-semibold mb-4">Documentation</h4>

@@ -108,6 +108,72 @@ npm start</code></pre>
                 </div>
             </section>
 
+            <!-- Using the Log Viewer -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Using the Log Viewer</h2>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <p class="text-gray-600 mb-4">KubeFleet includes a comprehensive log viewer for monitoring pod logs
+                        in real-time.</p>
+
+                    <h3 class="text-lg font-semibold mb-4">Accessing Logs</h3>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-600 mb-6">
+                        <li>Navigate to the dashboard and expand any namespace</li>
+                        <li>Find a pod in the namespace list</li>
+                        <li>Click the <i class="fas fa-eye text-blue-600"></i> icon next to the pod name</li>
+                        <li>The log viewer will open in a modal dialog</li>
+                    </ol>
+
+                    <h3 class="text-lg font-semibold mb-4">Log Viewer Features</h3>
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-gray-50 p-4 rounded">
+                            <h4 class="font-semibold text-gray-700 mb-2">Container Selection</h4>
+                            <p class="text-sm text-gray-600">Choose specific containers or view all containers in the
+                                pod</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded">
+                            <h4 class="font-semibold text-gray-700 mb-2">Log Level Filtering</h4>
+                            <p class="text-sm text-gray-600">Filter by ERROR, WARN, INFO, DEBUG levels</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded">
+                            <h4 class="font-semibold text-gray-700 mb-2">Text Search</h4>
+                            <p class="text-sm text-gray-600">Search for specific text patterns in log messages</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded">
+                            <h4 class="font-semibold text-gray-700 mb-2">Auto-refresh</h4>
+                            <p class="text-sm text-gray-600">Toggle real-time log updates every 5 seconds</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-semibold mb-4">Log Actions</h3>
+                    <div class="space-y-2 text-gray-600 mb-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-download text-green-600 mr-2"></i>
+                            <span><strong>Download:</strong> Export filtered logs as a text file</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-sync text-blue-600 mr-2"></i>
+                            <span><strong>Refresh:</strong> Manually refresh logs</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-trash text-red-600 mr-2"></i>
+                            <span><strong>Clear:</strong> Clear the current log view</span>
+                        </div>
+                    </div>
+
+                    <!-- Log Viewer Screenshot -->
+                    <div class="mt-8">
+                        <h3 class="text-lg font-semibold mb-4">Log Viewer Interface</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <img src="images/logs.png" alt="KubeFleet Log Viewer Interface"
+                                class="max-w-full h-auto rounded-lg shadow-lg mx-auto" style="max-height: 500px;">
+                            <p class="text-gray-600 mt-3 text-sm text-center">The log viewer provides a comprehensive
+                                interface for monitoring pod logs with real-time updates, filtering, and search
+                                capabilities.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Docker Deployment -->
             <section class="mb-12">
                 <h2 class="text-2xl font-semibold mb-4 text-gray-800">Docker Deployment</h2>
@@ -164,6 +230,7 @@ kubectl port-forward svc/kubefleet-dashboard 3000:3000</code></pre>
                     <ul class="list-disc list-inside space-y-2 text-gray-600">
                         <li>Read access to namespaces, pods, services, and deployments</li>
                         <li>Read access to metrics API (if available)</li>
+                        <li>Read access to pod logs for log monitoring functionality</li>
                     </ul>
                 </div>
             </section>
