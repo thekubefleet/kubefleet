@@ -1,7 +1,7 @@
 # KubeFleet 🚀
 
 [![Go Version](https://img.shields.io/badge/Go-1.24+-blue.svg)](https://golang.org)
-[![Node Version](https://img.shields.io/badge/Node-18+-green.svg)](https://nodejs.org)
+[![Node Version](https://img.shields.io/badge/Node-24+-green.svg)](https://nodejs.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
@@ -11,6 +11,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 ## ✨ Features
 
 ### 🕵️ Agent
+
 - **Smart Discovery**: Automatically discovers all namespaces and resources
 - **Resource Monitoring**: Tracks pods, deployments, and services in real-time
 - **Performance Metrics**: Collects CPU and memory usage data
@@ -18,6 +19,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 - **Kubernetes Native**: Runs as a pod with proper RBAC permissions
 
 ### 📊 Dashboard
+
 - **Real-time Updates**: Live data refresh every 30 seconds
 - **Cluster Overview**: High-level statistics and resource counts
 - **Namespace Explorer**: Interactive drill-down into namespaces and resources
@@ -40,7 +42,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 ### Prerequisites
 
 - **Go** (>=1.24)
-- **Node.js** (>=18)
+- **Node.js** (>=24)
 - **protoc** (Protocol Buffers compiler)
 - **Docker** (for container builds)
 - **Kubernetes cluster** (for deployment)
@@ -52,6 +54,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 ### Local Development
 
 1. **Clone and setup:**
+
    ```bash
    git clone https://github.com/thekubefleet/kubefleet.git
    cd kubefleet
@@ -59,27 +62,31 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
    ```
 
 2. **Generate protobuf code:**
+
    ```bash
    protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/agent.proto
    ```
 
 3. **Start the dashboard server:**
+
    ```bash
    go run ./cmd/server
    ```
 
 4. **Start the React development server:**
+
    ```bash
    cd dashboard
    npm start
    ```
 
 5. **Run the agent (in another terminal):**
+
    ```bash
    go run ./cmd/agent
    ```
 
-6. **Access the dashboard:** http://localhost:3000
+6. **Access the dashboard:** <http://localhost:3000>
 
 ### Docker Deployment
 
@@ -124,15 +131,18 @@ kubefleet/
 ### Environment Variables
 
 **Agent:**
+
 - `KUBEFLEET_SERVER_ADDR`: gRPC server address (default: localhost:50051)
 
 **Dashboard Server:**
+
 - `HTTP_PORT`: HTTP server port (default: 3000)
 - `GRPC_PORT`: gRPC server port (default: 50051)
 
 ### RBAC Permissions
 
 The agent requires the following permissions:
+
 - Read access to namespaces, pods, services, and deployments
 - Read access to metrics API (if available)
 
@@ -188,10 +198,12 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ### Common Issues
 
 1. **Agent can't connect to dashboard:**
+
    - Check the `KUBEFLEET_SERVER_ADDR` environment variable
    - Verify the dashboard service is running
 
 2. **Dashboard shows no data:**
+
    - Check if the agent is running and sending data
    - Verify the gRPC connection is working
    - Check the dashboard server logs
@@ -201,18 +213,24 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
    - Check browser console for errors
 
 #### No metrics available / "the server could not find the requested resource (get pods.metrics.k8s.io)"
+
 - Ensure metrics-server is installed in your cluster:
+
   ```sh
   kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
   ```
+
 - For local clusters (Docker Desktop, Minikube, Kind), patch metrics-server to skip TLS verification:
+
   ```sh
   kubectl -n kube-system patch deployment metrics-server \
     --type='json' \
     -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
   kubectl -n kube-system rollout restart deployment metrics-server
   ```
+
 - Verify metrics-server is working:
+
   ```sh
   kubectl top nodes
   kubectl top pods -A
