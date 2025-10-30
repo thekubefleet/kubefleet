@@ -16,7 +16,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server ./cmd/server
 
 # Build stage for React app
-FROM node:24-alpine AS react-builder
+FROM node:18-alpine AS react-builder
 
 WORKDIR /app
 
@@ -51,4 +51,4 @@ COPY --from=react-builder /app/build ./build
 EXPOSE 3000 50051
 
 # Run the server
-CMD ["./server"]
+CMD ["./server"] 
