@@ -28,8 +28,8 @@ This project and everyone participating in it is governed by our Code of Conduct
 
 ### Prerequisites
 
-- Go 1.24 or later
-- Node.js 24 or later
+- Go 1.18 or later
+- Node.js 16 or later
 - Docker (optional, for container builds)
 - Kubernetes cluster (for testing)
 - protoc (Protocol Buffers compiler)
@@ -37,7 +37,6 @@ This project and everyone participating in it is governed by our Code of Conduct
 ### Local Development
 
 1. **Clone and setup:**
-
    ```bash
    git clone https://github.com/thekubefleet/kubefleet.git
    cd kubefleet
@@ -45,13 +44,11 @@ This project and everyone participating in it is governed by our Code of Conduct
    ```
 
 2. **Generate protobuf code:**
-
    ```bash
    protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/agent.proto
    ```
 
 3. **Setup React dashboard:**
-
    ```bash
    cd dashboard
    npm install
@@ -59,7 +56,6 @@ This project and everyone participating in it is governed by our Code of Conduct
    ```
 
 4. **Start development servers:**
-
    ```bash
    # Terminal 1: Dashboard server
    go run ./cmd/server
@@ -94,7 +90,6 @@ kubefleet/
 ### Code Style Guidelines
 
 #### Go Code
-
 - Follow [Effective Go](https://golang.org/doc/effective_go.html)
 - Use `gofmt` for formatting
 - Add comments for exported functions and types
@@ -102,7 +97,6 @@ kubefleet/
 - Use meaningful variable names
 
 #### React/TypeScript Code
-
 - Follow TypeScript best practices
 - Use functional components with hooks
 - Follow Material-UI design patterns
@@ -110,7 +104,6 @@ kubefleet/
 - Use meaningful component and variable names
 
 #### General Guidelines
-
 - Write clear commit messages
 - Add tests for new functionality
 - Update documentation for API changes
@@ -119,7 +112,6 @@ kubefleet/
 ## Testing
 
 ### Go Tests
-
 ```bash
 # Run all tests
 go test ./...
@@ -132,14 +124,12 @@ go test ./internal/k8s
 ```
 
 ### React Tests
-
 ```bash
 cd dashboard
 npm test
 ```
 
 ### Integration Tests
-
 ```bash
 # Build and test containers
 docker build -t kubefleet-agent:test .
@@ -162,7 +152,6 @@ kubectl apply -f deploy/agent-deployment.yaml
 ### Commit Message Format
 
 Use conventional commit format:
-
 ```
 type(scope): description
 
@@ -172,13 +161,11 @@ type(scope): description
 ```
 
 Examples:
-
 - `feat(agent): add namespace filtering`
 - `fix(dashboard): resolve chart rendering issue`
 - `docs(readme): update installation instructions`
 
 ### Types
-
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -242,10 +229,8 @@ When creating a PR, please include:
 ## Recognition
 
 Contributors will be recognized in:
-
 - GitHub contributors list
 - Release notes
 - Project documentation
 
-Thank you for contributing to KubeFleet! 🚀
-
+Thank you for contributing to KubeFleet! 🚀 
