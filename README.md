@@ -86,7 +86,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
    go run ./cmd/agent
    ```
 
-6. **Access the dashboard:** http://localhost:3000
+6. **Access the dashboard:** <http://localhost:3000>
 
 ### Docker Deployment
 
@@ -215,17 +215,22 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 #### No metrics available / "the server could not find the requested resource (get pods.metrics.k8s.io)"
 
 - Ensure metrics-server is installed in your cluster:
+
   ```sh
   kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
   ```
+
 - For local clusters (Docker Desktop, Minikube, Kind), patch metrics-server to skip TLS verification:
+
   ```sh
   kubectl -n kube-system patch deployment metrics-server \
     --type='json' \
     -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
   kubectl -n kube-system rollout restart deployment metrics-server
   ```
+
 - Verify metrics-server is working:
+
   ```sh
   kubectl top nodes
   kubectl top pods -A
