@@ -169,46 +169,6 @@ func parseLogLevel(logLine string) string {
 	return "INFO" // Default level
 }
 
-func securityMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Add security headers
-		w.Header().Set("X-Content-Type-Options", "nosniff")
-		w.Header().Set("X-Frame-Options", "DENY")
-		w.Header().Set("X-XSS-Protection", "1; mode=block")
-		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
-		w.Header().Set("Content-Security-Policy", "default-src 'self'")
-
-		// Validate host header
-		if r.Host != "" && !strings.Contains(r.Host, "localhost") && !strings.Contains(r.Host, "127.0.0.1") {
-			// Add your domain validation logic here
-			host := strings.Split(r.Host, ":")[0]
-			if !isValidHost(host) {
-				http.Error(w, "Invalid host", http.StatusForbidden)
-				return
-			}
-		}
-
-		// Add request timeout
-		ctx := r.Context()
-		ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
-		defer cancel()
-		r = r.WithContext(ctx)
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-func isValidHost(host string) bool {
-	// Add your host validation logic here
-	validHosts := []string{"kubefleet-dashboard.local", "dashboard.kubefleet.io"}
-	for _, valid := range validHosts {
-		if host == valid {
-			return true
-		}
-	}
-	return false
-}
-
 func main() {
 	// Get port from environment or use default
 	grpcPort := os.Getenv("GRPC_PORT")
@@ -257,7 +217,7 @@ func main() {
 
 	// Start HTTP server
 	log.Printf("HTTP server listening on port %s", httpPort)
-	if err := http.ListenAndServe(":"+httpPort, securityMiddleware(httpServer)); err != nil {
+	if err := http.ListenAndServe(":"+httpPort, httpServer); err != nil {
 		log.Fatalf("Failed to serve HTTP: %v", err)
 	}
 }

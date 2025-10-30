@@ -16,10 +16,6 @@ spec:
         app: kubefleet-agent
     spec:
       serviceAccountName: kubefleet-agent
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 2000
       containers:
       - name: agent
         image: kubefleet-agent:latest
@@ -27,12 +23,6 @@ spec:
         env:
         - name: KUBEFLEET_SERVER_ADDR
           value: "kubefleet-dashboard:50051"  # Points to the dashboard service
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          readOnlyRootFilesystem: true
         resources:
           requests:
             memory: "64Mi"
@@ -73,4 +63,4 @@ subjects:
 roleRef:
   kind: ClusterRole
   name: kubefleet-agent
-  apiGroup: rbac.authorization.k8s.io
+  apiGroup: rbac.authorization.k8s.io 
