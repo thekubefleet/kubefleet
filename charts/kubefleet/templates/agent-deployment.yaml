@@ -1,0 +1,38 @@
+{{- if .Values.agent.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kubefleet.agentName" . }}
+  namespace: {{ include "kubefleet.namespace" . }}
+  labels:
+    {{- include "kubefleet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: agent
+spec:
+  replicas: {{ .Values.agent.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kubefleet.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: agent
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "kubefleet.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: agent
+    spec:
+      serviceAccountName: {{ include "kubefleet.agentServiceAccountName" . }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: agent
+          image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
+          imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
+          env:
+            - name: KUBEFLEET_SERVER_ADDR
+              value: {{ default (printf "%s:%v" (include "kubefleet.dashboardName" .) .Values.dashboard.service.grpcPort) .Values.agent.serverAddress | quote }}
+          resources:
+            {{- toYaml .Values.agent.resources | nindent 12 }}
+{{- end }}

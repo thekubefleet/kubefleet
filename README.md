@@ -11,6 +11,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 ## ✨ Features
 
 ### 🕵️ Agent
+
 - **Smart Discovery**: Automatically discovers all namespaces and resources
 - **Resource Monitoring**: Tracks pods, deployments, and services in real-time
 - **Performance Metrics**: Collects CPU and memory usage data
@@ -18,6 +19,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 - **Kubernetes Native**: Runs as a pod with proper RBAC permissions
 
 ### 📊 Dashboard
+
 - **Real-time Updates**: Live data refresh every 30 seconds
 - **Cluster Overview**: High-level statistics and resource counts
 - **Namespace Explorer**: Interactive drill-down into namespaces and resources
@@ -52,6 +54,7 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
 ### Local Development
 
 1. **Clone and setup:**
+
    ```bash
    git clone https://github.com/thekubefleet/kubefleet.git
    cd kubefleet
@@ -59,22 +62,26 @@ A modern Kubernetes monitoring solution with an intelligent agent that collects 
    ```
 
 2. **Generate protobuf code:**
+
    ```bash
    protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/agent.proto
    ```
 
 3. **Start the dashboard server:**
+
    ```bash
    go run ./cmd/server
    ```
 
 4. **Start the React development server:**
+
    ```bash
    cd dashboard
    npm start
    ```
 
 5. **Run the agent (in another terminal):**
+
    ```bash
    go run ./cmd/agent
    ```
@@ -95,6 +102,27 @@ kubectl apply -f deploy/agent-deployment.yaml
 # Access the dashboard
 kubectl port-forward svc/kubefleet-dashboard 3000:3000
 ```
+
+### Helm Deployment
+
+1. **Install metrics-server (required for CPU/memory metrics):**
+
+   ```bash
+   helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+   helm repo update metrics-server
+   helm upgrade -i metrics-server metrics-server/metrics-server -n kube-system --set args={--kubelet-insecure-tls}
+   ```
+
+2. **Install KubeFleet using Helm chart:**
+
+   ```bash
+   helm upgrade -i kubefleet ./charts/kubefleet -n kubefleet --create-namespace
+   ```
+
+3. **Access the dashboard locally:**
+   ```bash
+   kubectl -n kubefleet port-forward svc/kubefleet-dashboard 3000:3000
+   ```
 
 ## 📁 Project Structure
 
@@ -124,15 +152,18 @@ kubefleet/
 ### Environment Variables
 
 **Agent:**
+
 - `KUBEFLEET_SERVER_ADDR`: gRPC server address (default: localhost:50051)
 
 **Dashboard Server:**
+
 - `HTTP_PORT`: HTTP server port (default: 3000)
 - `GRPC_PORT`: gRPC server port (default: 50051)
 
 ### RBAC Permissions
 
 The agent requires the following permissions:
+
 - Read access to namespaces, pods, services, and deployments
 - Read access to metrics API (if available)
 
@@ -201,6 +232,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
    - Check browser console for errors
 
 #### No metrics available / "the server could not find the requested resource (get pods.metrics.k8s.io)"
+
 - Ensure metrics-server is installed in your cluster:
   ```sh
   kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
