@@ -1,0 +1,10 @@
+KubeFleet has been deployed.
+
+Dashboard service:
+  kubectl get svc {{ include "kubefleet.dashboardName" . }} -n {{ include "kubefleet.namespace" . }}
+
+Port-forward dashboard locally:
+  kubectl port-forward svc/{{ include "kubefleet.dashboardName" . }} 3000:{{ .Values.dashboard.service.httpPort }} -n {{ include "kubefleet.namespace" . }}
+
+If you enabled ingress, add this host to DNS or /etc/hosts:
+  {{ .Values.dashboard.ingress.host }}

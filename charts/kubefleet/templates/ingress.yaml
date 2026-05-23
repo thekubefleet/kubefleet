@@ -1,0 +1,29 @@
+{{- if and .Values.dashboard.enabled .Values.dashboard.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "kubefleet.dashboardName" . }}-ingress
+  namespace: {{ include "kubefleet.namespace" . }}
+  labels:
+    {{- include "kubefleet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dashboard
+  {{- with .Values.dashboard.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.dashboard.ingress.className }}
+  ingressClassName: {{ .Values.dashboard.ingress.className }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.dashboard.ingress.host | quote }}
+      http:
+        paths:
+          - path: {{ .Values.dashboard.ingress.path }}
+            pathType: {{ .Values.dashboard.ingress.pathType }}
+            backend:
+              service:
+                name: {{ include "kubefleet.dashboardName" . }}
+                port:
+                  number: {{ .Values.dashboard.service.httpPort }}
+{{- end }}

@@ -1,0 +1,68 @@
+nameOverride: ""
+fullnameOverride: ""
+
+namespaceOverride: ""
+
+imagePullSecrets: []
+
+agent:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: kubefleet-agent
+    tag: latest
+    pullPolicy: IfNotPresent
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+  # Leave empty to auto-target the dashboard service in this chart release.
+  serverAddress: ""
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+
+dashboard:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: kubefleet-dashboard
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    httpPort: 3000
+    grpcPort: 50051
+  env:
+    httpPort: "3000"
+    grpcPort: "50051"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  livenessProbe:
+    path: /api/health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readinessProbe:
+    path: /api/health
+    initialDelaySeconds: 5
+    periodSeconds: 5
+  ingress:
+    enabled: false
+    className: ""
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    host: kubefleet-dashboard.local
+    path: /
+    pathType: Prefix
+
+rbac:
+  create: true

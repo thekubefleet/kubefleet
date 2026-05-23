@@ -1,0 +1,35 @@
+{{- if and .Values.agent.enabled .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kubefleet.agentName" . }}
+  labels:
+    {{- include "kubefleet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: agent
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "pods", "services"]
+    verbs: ["get", "list"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods", "nodes"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kubefleet.agentName" . }}
+  labels:
+    {{- include "kubefleet.labels" . | nindent 4 }}
+    app.kubernetes.io/component: agent
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kubefleet.agentServiceAccountName" . }}
+    namespace: {{ include "kubefleet.namespace" . }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "kubefleet.agentName" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
